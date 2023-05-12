@@ -4,7 +4,7 @@ sequenceDiagram
     
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    server-->>browser: The new note data
+    server-->>browser: The server processes the data and returns 302 response whcih directs to /notes
     deactivate server
     
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
