@@ -1,17 +1,5 @@
 import { useState } from 'react'
 const Person = ({person}) => <li>{person.name} {person.number}</li>
-// const PersonForm = ({newName}, {newNumber}) => {
-//   return (
-//     <div>
-//     name: <input value={newName} onChange={handleNameChange} />
-//   </div>
-//   <div>
-//     number: <input value={newNumber} onChange={handleNumberChange} />
-//   </div>
-//   <div>
-//   )
-// }
-
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -72,13 +60,13 @@ const handleFliter = (event) => {
         </div>
       <h2>add a new</h2>
       <form onSubmit={addPerson}>
-   <div>
-    name: <input value={newName} onChange={handleNameChange} />
-   </div>
-   <div>
-         number: <input value={newNumber} onChange={handleNumberChange} />
-   </div>
-   <div>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
