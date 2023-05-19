@@ -1,5 +1,8 @@
 import { useState } from 'react'
-const Person = ({person}) => <li>{person.name} {person.number}</li>
+import SearchFilter from './components/SearchFliter'
+import PersonForm from './components/PersonForm'
+import NumbersContainer from './components/NumbersContainer'
+import TextHeading from './components/TextHeading'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -54,29 +57,18 @@ const handleFliter = (event) => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <div>
-          filter shown with: <input value={filter} onChange={handleFliter} />
-        </div>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {filter 
-        ? filteredPersons.map(person => <Person key={person.name} person={person} />)
-        : 
-        persons.map(person => <Person key={person.name} person={person} />)}
-      </ul>
+      <TextHeading title='Phonebook' />
+      <SearchFilter filter={filter} handleFliter={handleFliter} />
+      <TextHeading title='add a new' />
+      <PersonForm
+        newName={newName}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        addPerson={addPerson}
+      />
+      <TextHeading title='Numbers' />
+      <NumbersContainer filter={filter} filteredPersons={filteredPersons} persons={persons} />
     </div>
   )
 }
