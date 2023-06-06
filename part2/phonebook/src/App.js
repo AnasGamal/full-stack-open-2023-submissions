@@ -4,6 +4,8 @@ import PersonForm from './components/PersonForm'
 import NumbersContainer from './components/NumbersContainer'
 import TextHeading from './components/TextHeading'
 import personService from './services/persons';
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +13,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filteredPersons, setFilteredPersons] = useState([])
   const [filter, setFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [notificationType, setNotificationType] = useState('')
+
 
   useEffect(() => {
     personService
@@ -40,6 +45,11 @@ const addPerson = (event) => {
       .then (returnedPerson => {
         setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
       })
+      .catch(error => {
+        setNotificationType('error')
+        setNotificationMessage(`Information of ${existingPerson.name} has already been deleted from the server.`)
+        console.log(error)
+      })
     }
     return;
   }
@@ -53,6 +63,7 @@ const addPerson = (event) => {
     setPersons(persons.concat(returnedPerson))
     setNewName('')
     setNewNumber('')
+    setNotificationMessage(`Added ${returnedPerson.name}`)
   })
   
   
@@ -84,6 +95,7 @@ const handleFliter = (event) => {
   return (
     <div>
       <TextHeading title='Phonebook' />
+      <Notification message={notificationMessage} type={notificationType} />
       <SearchFilter filter={filter} handleFliter={handleFliter} />
       <TextHeading title='add a new' />
       <PersonForm
