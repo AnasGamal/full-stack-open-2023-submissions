@@ -15,16 +15,7 @@ const Results = ({ results, singleCountry, toggleShow}) => {
       } else if(results.length === 0) return <div>No results.</div>
     }
     if (singleCountry) {
-        return (
-            <div>
-                <h1>{singleCountry.name.common}</h1>
-                <p>capital {singleCountry.capital}</p>
-                <p>area {singleCountry.area}</p>
-                <h2>Languages:</h2>
-                <SingleResult langs={singleCountry.languages} />
-                <img src={singleCountry.flags.png} />
-            </div>
-        )
+        return <SingleResult singleCountry={singleCountry} />
     }
     return
   }

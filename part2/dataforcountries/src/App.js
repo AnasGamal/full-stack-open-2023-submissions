@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Results from './components/Results'
 import countriesService from './services/countries'
 
@@ -18,9 +17,12 @@ const App = () => {
         })
   }, [])
 
+  // display a loading element if countries is not yet loaded
   if(!countries) {
-    return null;
+    return <div>loading...</div>
   }
+
+
   const filterCountries = (query) => {
     if (query) {
     const filteredCountries = countries.filter(country => country.toLowerCase().includes(query))
@@ -36,9 +38,10 @@ const App = () => {
   }
 
   const handleChange = (event) => {
-    const query = event.target.value.toLowerCase();
+    const query = event.target.value;
+    const queryLoweredCase = query.toLowerCase();
     setValue(query)
-    filterCountries(query)
+    filterCountries(queryLoweredCase)
   }
   
   const toggleShow = (result) => {
