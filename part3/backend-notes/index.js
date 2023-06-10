@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 
 let notes = [
@@ -29,10 +31,7 @@ let notes = [
     response.json(notes)
   })
   
-  const PORT = 3001
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-  })
+
   app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     console.log(id)
@@ -40,7 +39,7 @@ let notes = [
         console.log(note.id, typeof note.id, id, typeof id, note.id === id)
         return note.id === id
       })
-    if(note) response.json
+    if(note) response.json(person)
     else response.status(404).end()
   })
 
@@ -76,4 +75,9 @@ let notes = [
     notes = notes.concat(note)
   
     response.json(note)
+  })
+
+  const PORT = process.env.PORT || 3001
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
   })
