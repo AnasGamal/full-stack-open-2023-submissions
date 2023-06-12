@@ -1,13 +1,11 @@
 require('dotenv').config();
 const mongoose = require('mongoose')
-
 const url = process.env.MONGO_URI
-
 mongoose.set('strictQuery',false)
 console.log('connecting to', url)
 
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB');
   })
   .catch((error) => {
@@ -30,7 +28,7 @@ const personSchema = new mongoose.Schema({
         return regex.test(value);
       },
       message: 'Invalid phone number format',
-  }
+    },
   }
 })
 
