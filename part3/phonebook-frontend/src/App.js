@@ -66,7 +66,8 @@ const addPerson = (event) => {
     setNotificationMessage(`Added ${createdPerson.name}`)
   })
   .catch(error => {
-    console.log(error.response.data.error)
+    setNotificationType('error')
+    setNotificationMessage(error.response.data.error)
   })
   
   
