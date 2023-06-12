@@ -1,7 +1,11 @@
+require('dotenv').config();
+const Person = require('./models/person')
+
 const express = require('express')
 var morgan = require('morgan')
 const app = express()
-const cors = require('cors')
+const cors = require('cors');
+const person = require('./models/person');
 
 app.use(cors())
 
@@ -37,19 +41,13 @@ let persons =  [
 ]
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  console.log(id)
-  const person = persons.find(person => person.id === id)
-  console.log()
-  if (person) response.json(person)
-  else response.status(404).end()
+  Person.findById(request.params.id).then(person => response.json(person))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id);
-  
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+  .then(result => response.status(204).end())
+  .catch(error => next(error))
 })
 
 let idSet = new Set(persons.map(person => person.id))
@@ -74,15 +72,13 @@ app.post('/api/persons', (request, response) => {
       error: `name must be unique`
     })
   
-  const newPerson = {
+  const person = new Person({
     id: generateId(),
     name: body.name,
     number: body.number,
-  }
+  })
 
-  persons = persons.concat(newPerson)
-
-  response.json(newPerson)
+  person.save().then(savedPerson => response.json(savedPerson))
 })
 
 app.get('/info', (request, response) => {
@@ -96,7 +92,22 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(persons => response.json(persons))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 // app.use(unknownEndpoint)
