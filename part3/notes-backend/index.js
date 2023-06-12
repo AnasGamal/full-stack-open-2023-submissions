@@ -53,14 +53,16 @@ let notes = [
   
   app.post('/api/notes', (request, response, next) => {
     const body = request.body
-  
+
     const note = new Note ({
       content: body.content,
       important: body.important || false,
       id: generateId(),
     })
 
-    note.save().then(savedNote => response.json(savedNote))
+    note.save()
+    .then(savedNote => response.json(savedNote))
+    .catch(error => next(error))
   })
 
   app.put('/api/notes/:id', (request, response, next) => {
