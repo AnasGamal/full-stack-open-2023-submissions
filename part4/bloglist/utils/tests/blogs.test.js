@@ -74,4 +74,11 @@ test('when list has only one blog, equals the likes of that', () => {
   const result = listHelper.totalLikes(listWithOneBlog)
   expect(result).toBe(5)
 })
+test('author with most blogs', () => {
+  const result = listHelper.mostBlogs(blogs)
+  expect(result).toStrictEqual({
+    author: "Robert C. Martin",
+    blogs: 3
+  })
+})
 })
