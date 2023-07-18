@@ -52,6 +52,14 @@ const initialBlogs = [
     }  
   ]
 
+const nonExistingId = async () => {
+const blog = new Blog({ content: 'willremovethissoon' })
+await blog.save()
+await blog.deleteOne()
+
+return blog._id.toString()
+}
+
 const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -72,9 +80,20 @@ const blogsInDb = async () => {
     return blogs.map(u => u.toJSON())
 }
 
+// const createUser = async () => {
+//     const user = new User({
+//       username: 'testuser1',
+//       password: 'testpassword',
+//     });
+//     await user.save();
+//     return user;
+//   };
+
 module.exports = {
 usersInDb,
 blogsInDb,
 initialBlogs,
-listWithOneBlog
+listWithOneBlog,
+nonExistingId,
+// createUser
 }
