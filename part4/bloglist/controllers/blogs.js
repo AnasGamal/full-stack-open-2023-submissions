@@ -26,14 +26,15 @@ blogsRouter.get('/:id', (request, response, next) => {
   
 blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body 
-  const { title, url } = request.body
+  const { title, url, likes } = request.body
   const user = request.user
 
-  if (!url && !title) {
-    return response.status(400).end
+  if (!url || !title || typeof url === 'undefined' || typeof title === 'undefined') {
+    return response.status(400).end()
   }
     const savedBlog = new Blog ({
       ...body,
+      likes: likes || 0,
       user: user.id
     })
     
