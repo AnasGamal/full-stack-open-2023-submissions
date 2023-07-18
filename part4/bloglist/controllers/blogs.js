@@ -70,11 +70,14 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, n
 })
 
 blogsRouter.put('/:id', (request, response, next) => {
-  const body = request.body
+  const { title, author, url, likes, user } = request.body
 
   const blog = {
-    content: body.content,
-    important: body.important,
+    title,
+    author,
+    url,
+    likes,
+    user
   }
 
   Blog.findByIdAndUpdate(request.params.id, blog, { new: true })

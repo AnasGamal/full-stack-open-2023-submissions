@@ -11,8 +11,6 @@ describe('when there is initially some blogs saved', () => {
     var token;
     var user;
     beforeEach(async () => {
-        
-
         await User.deleteMany({})
 
         const passwordHash = await bcrypt.hash('sekret', 10)
@@ -105,7 +103,6 @@ describe('when there is initially some blogs saved', () => {
     })
   })
 
-  // TODO: Token Authentication
   describe('addition of a new blog', () => {
     test('succeeds with valid data', async () => {
       const newBlog = {
@@ -145,6 +142,24 @@ describe('when there is initially some blogs saved', () => {
       const blogsAtEnd = await helper.blogsInDb()
 
       expect(blogsAtEnd).toHaveLength(helper.getInitialBlogs(user.id).length)
+    })
+  })
+
+  describe('modify existing blog', () => {
+    test('succeeds with valid data', async () => {
+      const updatedUrl = 'edited'
+      const editedBlog = {
+        url: updatedUrl
+      }
+      // blog id in paramters is from test_helper.js, we always begin with data there
+      const response = await api
+        .put('/api/blogs/5a422b3a1b54a676234d17f9')
+        .set('Authorization', `Bearer ${token}`)
+        .send(editedBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      expect(response.body.url).toBe(updatedUrl)
     })
   })
 
