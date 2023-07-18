@@ -10,6 +10,18 @@ blogsRouter.get('/', (request, response) => {
         response.json(blogs)
       })
   })
+
+blogsRouter.get('/:id', (request, response, next) => {
+  Blog.findById(request.params.id)
+    .then(blog => {
+      if (blog) {
+        response.json(blog)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+})
   
 blogsRouter.post('/', async (request, response) => {
   const body = request.body 
@@ -32,5 +44,29 @@ blogsRouter.post('/', async (request, response) => {
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
   })
+
+  
+blogsRouter.delete('/:id', async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const blogToDelete = await Blog.findById(request.params.id)
+  if (!blogToDelete) {
+    return response.status(404).json({ error: 'Blog not found' })
+  }
+
+  if (blogToDelete.user.toString() !== decodedToken.id.toString()) {
+    return response.status(401).json({ error: 'Unauthorized: Only the creator can delete the blog' })
+  }
+
+  try {
+    await Blog.findByIdAndDelete(blogToDelete.id)
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = blogsRouter  
