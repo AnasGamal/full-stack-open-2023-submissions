@@ -5,7 +5,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 usersRouter.get('/', async (request, response) => {
     const users = await User
-      .find({})
+      .find({}).populate('blogs')
     response.json(users)
   })
 

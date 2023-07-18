@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const User = require('../models/user')
 
 const totalLikes = (blogs) => {
     const totalLikes = blogs.reduce((sum, post) => sum + (post.likes || 0), 0);
