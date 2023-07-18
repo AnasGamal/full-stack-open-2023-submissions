@@ -1,4 +1,3 @@
-const User = require('../models/user')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
 const supertest = require('supertest')
@@ -12,27 +11,45 @@ describe('when there is initially some blogs saved', () => {
         await Blog.insertMany(helper.initialBlogs);
         });
 
-  test('blogs are returned as json', async () => {
+    test("blogs have id property named id instead of _id", async () => {
+        const response = await api.get("/api/blogs");
+
+        const ids = response.body.map((blog) => blog.id);
+    
+        for (const id of ids) {
+            expect(id).toBeDefined();
+        }
+    });
+
+    test('blogs are returned as json', async () => {
     await api
-      .get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-  })
+        .get('/api/blogs')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
 
-  test('all blogs are returned', async () => {
-    const response = await api.get('/api/blogs')
+    test('all blogs are returned', async () => {
+        const response = await api.get('/api/blogs')
 
-    expect(response.body).toHaveLength(helper.initialblogs.length)
-  })
+        expect(response.body).toHaveLength(helper.initialBlogs.length)
+    })
 
-  test('a specific blog is within the returned blogs', async () => {
-    const response = await api.get('/api/blogs')
+    test('likes are 0 if likes property is missing', async () => {
 
-    const contents = response.body.map(r => r.content)
-    expect(contents).toContain(
-      'Browser can execute only JavaScript'
-    )
-  })
+        const newBlog = {
+          title: 'Any Title',
+          author: 'Person',
+          url: 'test-url',
+        }
+      
+        const response = await api
+          .post('/api/blogs')
+          .send(newBlog)
+          .expect(201)
+          .expect('Content-Type', /application\/json/)
+      
+        expect(response.body.likes).toBe(0)
+      })
 
   describe('viewing a specific blog', () => {
 
@@ -68,6 +85,7 @@ describe('when there is initially some blogs saved', () => {
     })
   })
 
+  // TODO: Token Authentication
   describe('addition of a new blog', () => {
     test('succeeds with valid data', async () => {
       const newBlog = {
@@ -77,7 +95,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
-        .send(newBLog)
+        .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
@@ -118,7 +136,7 @@ describe('when there is initially some blogs saved', () => {
       const blogsAtEnd = await helper.blogsInDb()
 
       expect(blogsAtEnd).toHaveLength(
-        helper.initialblogs.length - 1
+        helper.initialBlogs.length - 1
       )
 
       const contents = blogsAtEnd.map(r => r.content)

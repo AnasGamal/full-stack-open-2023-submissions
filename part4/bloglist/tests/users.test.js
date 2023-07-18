@@ -86,8 +86,8 @@ describe('when there is initially one user in db', () => {
       expect(response).toMatchObject({ error: expect.anything() });
    })
 
-})
-
-afterAll(async () => {
-  await mongoose.connection.close()
+   afterAll(async () => {
+    await User.deleteOne({ id: user.id });
+    await mongoose.connection.close()
+  })
 })
