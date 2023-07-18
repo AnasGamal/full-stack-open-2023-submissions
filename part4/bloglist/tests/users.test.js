@@ -5,9 +5,6 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 
-// using timeout with 10000ms is only workaround for network latencies
-// there is probably a better implementation so that tests don't fail for timeout
-
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
@@ -38,7 +35,7 @@ describe('when there is initially one user in db', () => {
 
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
-  }, 10000)
+  })
 
   test('creation fails with a non unique username', async () => {
 
@@ -54,7 +51,7 @@ describe('when there is initially one user in db', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response).toMatchObject({ error: expect.anything() });
-  }, 15000)
+  })
 
   test('creation fails with a username shorter than 3 characters', async () => {
 
@@ -70,7 +67,7 @@ describe('when there is initially one user in db', () => {
       .expect('Content-Type', /application\/json/)
 
       expect(response).toMatchObject({ error: expect.anything() });
-  }, 10000)
+  })
 
   test('creation fails with a password shorter than 3 characters', async () => {
 
@@ -86,6 +83,6 @@ describe('when there is initially one user in db', () => {
       .expect('Content-Type', /application\/json/)
 
       expect(response).toMatchObject({ error: expect.anything() });
-   }, 10000)
+   })
 
 })
