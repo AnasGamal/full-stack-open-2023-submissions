@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', (request, response) => {
     Blog
@@ -23,10 +24,10 @@ blogsRouter.get('/:id', (request, response, next) => {
     .catch(error => next(error))
 })
   
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body 
   const user = request.user
-  
+
     const savedBlog = new Blog ({
       ...body,
       user: user.id
@@ -42,7 +43,7 @@ blogsRouter.post('/', async (request, response) => {
   })
 
   
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
   const user = request.user
 
 
@@ -61,6 +62,22 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   } catch (error) {
     next(error)
   }
+})
+
+blogsRouter.put('/:id', (request, response, next) => {
+  const body = request.body
+
+  const blog = {
+    content: body.content,
+    important: body.important,
+  }
+
+  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    .populate("user", { username: 1, name: 1 })
+    .then(updatedBlog => {
+      response.json(updatedBlog)
+    })
+    .catch(error => next(error))
 })
 
 module.exports = blogsRouter  

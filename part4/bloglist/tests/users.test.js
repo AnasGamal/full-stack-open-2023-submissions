@@ -4,6 +4,7 @@ const helper = require('./test_helper')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
+const mongoose = require('mongoose')
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -85,4 +86,8 @@ describe('when there is initially one user in db', () => {
       expect(response).toMatchObject({ error: expect.anything() });
    })
 
+})
+
+afterAll(async () => {
+  await mongoose.connection.close()
 })
