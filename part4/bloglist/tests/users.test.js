@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const helper = require('./test_helper')
+const api = require('../controllers/users')
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -23,7 +25,7 @@ describe('when there is initially one user in db', () => {
     await api
       .post('/api/users')
       .send(newUser)
-      .expect(201)
+      .expect(400)
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
@@ -32,4 +34,55 @@ describe('when there is initially one user in db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('creation fails with a non unique username', async () => {
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+
+    const newUser = {
+      username: 'root',
+      passwordHash
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response).toMatchObject({ error: expect.anything() });
+  })
+
+  test('creation fails with a username shorter than 3 characters', async () => {
+
+    const newUser = {
+      username: 'ro',
+      password: 'password'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+      expect(response).toMatchObject({ error: expect.anything() });
+  })
+
+  test('creation fails with a password shorter than 3 characters', async () => {
+
+    const newUser = {
+      username: 'validUsername',
+      password: 'in'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+      expect(response).toMatchObject({ error: expect.anything() });
+   })
+
 })
