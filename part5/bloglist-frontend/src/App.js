@@ -5,10 +5,39 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [newBlogTitle, setNewBlogTitle] = useState('')
+  const [newBlogAuthor, setNewBlogAuthor] = useState('')
+  const [newBlogUrl, setNewBlogUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: newBlogTitle,
+      author: newBlogAuthor,
+      url: newBlogUrl
+    }
+        blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+          setNewBlogTitle('')
+      })
+  }
+
+  const handleBlogTitleChange = (event) => {
+    setNewBlogTitle(event.target.value)
+  }
+
+  const handleBlogAuthorChange = (event) => {
+    setNewBlogAuthor(event.target.value)
+  }
+  const handleBlogUrlChange = (event) => {
+    setNewBlogUrl(event.target.value)
+  }
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -34,15 +63,32 @@ const App = () => {
     </form>      
   )
 
-  // const blogForm = () => (
-    // <form onSubmit={addNote}>
-    //   <input
-    //     value={newNote}
-    //     onChange={handleNoteChange}
-    //   />
-    //   <button type="submit">save</button>
-    // </form>  
-  // )
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+      title
+      <input
+        value={newBlogTitle}
+        onChange={handleBlogTitleChange}
+      />
+      </div>
+      <div>
+      author
+      <input
+        value={newBlogAuthor}
+        onChange={handleBlogAuthorChange}
+      />
+      </div>
+      <div>
+      url
+      <input
+        value={newBlogUrl}
+        onChange={handleBlogUrlChange}
+      />
+      </div>
+      <button type="submit">save</button>
+    </form>  
+  )
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -56,6 +102,7 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -73,8 +120,11 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       {user === null && loginForm()}
-      {/* {user !== null && blogForm()} */}
-
+      {user && <div>
+      {user.name && <p>{user.name} logged in</p> }
+         {blogForm()}
+      </div>
+    }
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
