@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,7 +13,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -25,6 +28,11 @@ const App = () => {
         .then(returnedBlog => {
           setBlogs(blogs.concat(returnedBlog))
           setNewBlogTitle('')
+          setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 10000)
       })
   }
 
@@ -42,6 +50,8 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
+
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -120,11 +130,17 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setMessage(`Successfully logged in`)
+      setMessageType('success')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
     catch (exception) {
-      setErrorMessage('wrong credentials')
+      setMessage('wrong username or password')
+      setMessageType('error')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
     console.log('logging in with', username, password)
@@ -132,6 +148,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message = {message} type={messageType} />
       <h2>blogs</h2>
       {user === null && loginForm()}
       {user && <div>
