@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import './index.css'
 
 const App = () => {
@@ -138,13 +139,15 @@ const App = () => {
       <Notification message = {message} type={messageType} />
       <h2>blogs</h2>
       {user === null &&   
+      <Togglable buttonLabel="Login">
       <LoginForm
       username={username}
       password={password}
       handleUsernameChange={handleUsernameChange}
       handlePasswordChange={handlePasswordChange}
       handleLogin={handleLogin}
-      />}
+      />
+      </Togglable>}
       {user && <div>
       {user.name && <p>{user.name} logged in</p> }
       <form onSubmit={handleLogout}>
