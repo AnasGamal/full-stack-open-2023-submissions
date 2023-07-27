@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import './index.css'
 
 const App = () => {
@@ -15,6 +16,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('')
+
+  const [loginVisible, setLoginVisible] = useState(false)
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -51,7 +54,13 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value)
+  }
 
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -62,29 +71,7 @@ const App = () => {
     }
   }, [])
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>      
-  )
+
 
   const blogForm = () => (
     <form onSubmit={addBlog}>
@@ -150,7 +137,14 @@ const App = () => {
     <div>
       <Notification message = {message} type={messageType} />
       <h2>blogs</h2>
-      {user === null && loginForm()}
+      {user === null &&   
+      <LoginForm
+      username={username}
+      password={password}
+      handleUsernameChange={handleUsernameChange}
+      handlePasswordChange={handlePasswordChange}
+      handleLogin={handleLogin}
+      />}
       {user && <div>
       {user.name && <p>{user.name} logged in</p> }
       <form onSubmit={handleLogout}>
