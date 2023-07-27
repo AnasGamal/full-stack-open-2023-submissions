@@ -30,7 +30,11 @@ const App = () => {
         .create(blogObject)
         .then(returnedBlog => {
           setBlogs(blogs.concat(returnedBlog))
+          // Reset blog form values
           setNewBlogTitle('')
+          setNewBlogAuthor('')
+          setNewBlogUrl('')
+          // show success UI message
           setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
           setMessageType('success')
           setTimeout(() => {
