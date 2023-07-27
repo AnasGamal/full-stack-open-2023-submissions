@@ -5,6 +5,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 import './index.css'
 
 const App = () => {
@@ -17,8 +18,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('')
-
-  const [loginVisible, setLoginVisible] = useState(false)
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -71,36 +70,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-
-
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <div>
-      title
-      <input
-        value={newBlogTitle}
-        onChange={handleBlogTitleChange}
-      />
-      </div>
-      <div>
-      author
-      <input
-        value={newBlogAuthor}
-        onChange={handleBlogAuthorChange}
-      />
-      </div>
-      <div>
-      url
-      <input
-        value={newBlogUrl}
-        onChange={handleBlogUrlChange}
-      />
-      </div>
-      <button type="submit">save</button>
-    </form>  
-  )
-
+ 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -156,7 +126,17 @@ const App = () => {
          </button>
       </form>
 
-      {blogForm()}
+      <Togglable buttonLabel="new blog" >
+        <BlogForm 
+        addBlog={addBlog}
+        newBlogTitle={newBlogTitle}
+        handleBlogTitleChange={handleBlogTitleChange}
+        newBlogAuthor={newBlogAuthor}
+        handleBlogAuthorChange={handleBlogAuthorChange}
+        newBlogUrl={newBlogUrl}
+        handleBlogUrlChange={handleBlogUrlChange}
+        />
+      </Togglable>
       </div>
     }
       {blogs.map(blog =>
