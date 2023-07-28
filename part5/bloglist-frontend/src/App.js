@@ -42,6 +42,21 @@ const App = () => {
         }, 10000)
       })
   }
+  const handleLikeClick = (blog) => {
+    console.log('clicked')
+    const blogObject = {
+      user: blog.user.id,
+      likes: blog.likes+1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+    blogService
+      .update(blog.id, blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(b => b.id !== returnedBlog.id ? b : returnedBlog))
+      })
+  }
 
   const handleBlogTitleChange = (event) => {
     setNewBlogTitle(event.target.value)
@@ -76,9 +91,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService
+      .getAll()
+      .then(blogs =>
+        setBlogs(blogs)
+      )
   }, [])
 
   const handleLogin = async (event) => {
@@ -150,6 +167,7 @@ const App = () => {
           setMessage={setMessage}
           setMessageType={setMessageType}
           user={user}
+          handleLikeClick={() => handleLikeClick(blog)}
         />
       )}
     </div>

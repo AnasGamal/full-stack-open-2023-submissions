@@ -5,26 +5,12 @@ const Blog = ({
   blog,
   setMessage,
   setMessageType,
-  user }) => {
+  user,
+  handleLikeClick
+}) => {
   const [displayedBlog, setDisplayedBlog] = useState(blog)
   const [detailsVisible, setdetailsVisible] = useState(false)
   const showWhenVisible = { display: detailsVisible ? '' : 'none' }
-
-  const handleLikeClick = (blog) => {
-    console.log('clicked')
-    const blogObject = {
-      user: blog.user.id,
-      likes: displayedBlog.likes+1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    blogService
-      .update(blog.id, blogObject)
-      .then(returnedBlog => {
-        setDisplayedBlog(returnedBlog)
-      })
-  }
 
   const handleViewBlog = () => {
     setdetailsVisible(!detailsVisible)
@@ -73,7 +59,7 @@ const Blog = ({
         { detailsVisible ? (
           <>
             <p className='blogUrl'>{blog.url}</p>
-            <p className='blogLikes'>{displayedBlog.likes} <button onClick={() => handleLikeClick(blog)}>like</button></p>
+            <p className='blogLikes'>{blog.likes} <button onClick={() => handleLikeClick(blog)} className='blogLikeButton'>like</button></p>
             <p className='blogUser'>{blog.user.name}</p>
             {(user && user.username === blog.user.username) ? (
               <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
