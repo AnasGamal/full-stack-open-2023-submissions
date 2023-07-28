@@ -64,18 +64,22 @@ const Blog = ({
     return null
   }
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title}
-      <button onClick={handleViewBlog}>
+      <button onClick={handleViewBlog} className='blogToggle'>
         {detailsVisible ? 'hide' : 'view'}
       </button>
-      <div style={showWhenVisible}>
-        <p>{blog.url}</p>
-        <p>{displayedBlog.likes} <button onClick={() => handleLikeClick(blog)}>like</button></p>
-        <p>{blog.user.name}</p>
-        {(user && user.username === blog.user.username) ? (
-          <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
-        ) : null }
+      <div style={showWhenVisible} className='togglableContent'>
+        { detailsVisible ? (
+          <>
+            <p className='blogUrl'>{blog.url}</p>
+            <p className='blogLikes'>{displayedBlog.likes} <button onClick={() => handleLikeClick(blog)}>like</button></p>
+            <p className='blogUser'>{blog.user.name}</p>
+            {(user && user.username === blog.user.username) ? (
+              <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
+            ) : null }
+          </>
+        ): null}
       </div>
     </div>
   )
