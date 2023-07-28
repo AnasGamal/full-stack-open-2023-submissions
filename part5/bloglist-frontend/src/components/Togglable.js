@@ -2,7 +2,8 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const Togglable = React.forwardRef((props, ref) => {
+// eslint-disable-next-line react/display-name
+const Togglable = React.forwardRef((props) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }

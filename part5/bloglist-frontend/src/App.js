@@ -14,7 +14,7 @@ const App = () => {
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('') 
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('')
@@ -26,20 +26,20 @@ const App = () => {
       author: newBlogAuthor,
       url: newBlogUrl
     }
-        blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-          // Reset blog form values
-          setNewBlogTitle('')
-          setNewBlogAuthor('')
-          setNewBlogUrl('')
-          // show success UI message
-          setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
-          setMessageType('success')
-          setTimeout(() => {
-            setMessage(null)
-          }, 10000)
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        // Reset blog form values
+        setNewBlogTitle('')
+        setNewBlogAuthor('')
+        setNewBlogUrl('')
+        // show success UI message
+        setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+        setMessageType('success')
+        setTimeout(() => {
+          setMessage(null)
+        }, 10000)
       })
   }
 
@@ -74,11 +74,11 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
- 
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   const handleLogin = async (event) => {
@@ -87,12 +87,12 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user),) 
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user),)
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage(`Successfully logged in`)
+      setMessage('Successfully logged in')
       setMessageType('success')
       setTimeout(() => {
         setMessage(null)
@@ -112,44 +112,44 @@ const App = () => {
     <div>
       <Notification message = {message} type={messageType} />
       <h2>blogs</h2>
-      {user === null &&   
+      {user === null &&
       <Togglable buttonLabel="Login">
-      <LoginForm
-      username={username}
-      password={password}
-      handleUsernameChange={handleUsernameChange}
-      handlePasswordChange={handlePasswordChange}
-      handleLogin={handleLogin}
-      />
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={handleUsernameChange}
+          handlePasswordChange={handlePasswordChange}
+          handleLogin={handleLogin}
+        />
       </Togglable>}
       {user && <div>
-      {user.name && <p>{user.name} logged in</p> }
-      <form onSubmit={handleLogout}>
-      <button type='submit'>
-          Log out
-         </button>
-      </form>
+        {user.name && <p>{user.name} logged in</p> }
+        <form onSubmit={handleLogout}>
+          <button type='submit'>
+            Log out
+          </button>
+        </form>
 
-      <Togglable buttonLabel="new blog" >
-        <BlogForm 
-        addBlog={addBlog}
-        newBlogTitle={newBlogTitle}
-        handleBlogTitleChange={handleBlogTitleChange}
-        newBlogAuthor={newBlogAuthor}
-        handleBlogAuthorChange={handleBlogAuthorChange}
-        newBlogUrl={newBlogUrl}
-        handleBlogUrlChange={handleBlogUrlChange}
-        />
-      </Togglable>
+        <Togglable buttonLabel="new blog" >
+          <BlogForm
+            addBlog={addBlog}
+            newBlogTitle={newBlogTitle}
+            handleBlogTitleChange={handleBlogTitleChange}
+            newBlogAuthor={newBlogAuthor}
+            handleBlogAuthorChange={handleBlogAuthorChange}
+            newBlogUrl={newBlogUrl}
+            handleBlogUrlChange={handleBlogUrlChange}
+          />
+        </Togglable>
       </div>
-    }
+      }
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
         <Blog
-        key={blog.id}
-        blog={blog}
-        setMessage={setMessage}
-        setMessageType={setMessageType}
-        user={user}
+          key={blog.id}
+          blog={blog}
+          setMessage={setMessage}
+          setMessageType={setMessageType}
+          user={user}
         />
       )}
     </div>
