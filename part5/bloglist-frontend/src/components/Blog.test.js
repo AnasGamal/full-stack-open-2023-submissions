@@ -55,19 +55,16 @@ test('Blog renders author and url after clicking view', async () => {
 })
 
 test('Blog like button event handler is called twice when pressed twice', async () => {
-  const { container } = render(<Blog blog={blog} />)
+  const mockLikeButtonHandler = jest.fn()
+  render(<Blog blog={blog} handleLikeClick={mockLikeButtonHandler} />)
   const user = userEvent.setup()
+  // find view button and click it once
   const viewButton = screen.getByText('view')
   await user.click(viewButton)
-  const mockLikeButtonHandler = jest.fn()
+  // find like button and clicke it twice
   const likeButton = screen.getByText('like')
   await user.click(likeButton)
-  const blogLikes = container.querySelector('.blogLikeButton')
-  expect(blogLikes).toHaveTextContent(
-    15
-  )
-  const blogUrl = container.querySelector('.blogUrl')
-  expect(blogUrl).toHaveTextContent(
-    'url-string'
-  )
+  await user.click(likeButton)
+  // expect event handler mock function to be called twice
+  expect(mockLikeButtonHandler.mock.calls).toHaveLength(2)
 })
