@@ -72,7 +72,7 @@ const Blog = ({
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
         <p>{displayedBlog.likes} <button onClick={() => handleLikeClick(blog)}>like</button></p>
-        <p>{blog.author}</p>
+        <p>{blog.user.name}</p>
         <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
       </div>
     </div>
