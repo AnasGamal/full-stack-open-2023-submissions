@@ -73,7 +73,10 @@ const Blog = ({
         <p>{blog.url}</p>
         <p>{displayedBlog.likes} <button onClick={() => handleLikeClick(blog)}>like</button></p>
         <p>{blog.user.name}</p>
-        <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
+        {console.log(user)}
+        {(user && user.username === blog.user.username) ? (
+          <p><button onClick={() => handleRemoveClick(blog)}>remove</button></p>
+        ) : null }
       </div>
     </div>
   )
