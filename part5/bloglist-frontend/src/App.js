@@ -29,8 +29,7 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        const returnedBlogWithUser = { ...returnedBlog, user: user }
-        setBlogs(blogs.concat(returnedBlogWithUser))
+        setBlogs(blogs.concat(returnedBlog))
         // Reset blog form values
         setNewBlogTitle('')
         setNewBlogAuthor('')
