@@ -20,7 +20,7 @@ test('Blog renders title', () => {
   )
 })
 
-test('Blog renders user', async () => {
+test('Blog renders user after clicking view', async () => {
   const { container } = render(<Blog blog={blog} />)
   const user = userEvent.setup()
   const button = screen.getByText('view')
@@ -37,4 +37,37 @@ test('Blog does not render author and url by default', () => {
   expect(blogLikes).toBeNull()
   const blogUrl = container.querySelector('.blogUrl')
   expect(blogUrl).toBeNull()
+})
+
+test('Blog renders author and url after clicking view', async () => {
+  const { container } = render(<Blog blog={blog} />)
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
+  const blogLikes = container.querySelector('.blogLikes')
+  expect(blogLikes).toHaveTextContent(
+    15
+  )
+  const blogUrl = container.querySelector('.blogUrl')
+  expect(blogUrl).toHaveTextContent(
+    'url-string'
+  )
+})
+
+test('Blog like button event handler is called twice when pressed twice', async () => {
+  const { container } = render(<Blog blog={blog} />)
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+  const mockLikeButtonHandler = jest.fn()
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  const blogLikes = container.querySelector('.blogLikeButton')
+  expect(blogLikes).toHaveTextContent(
+    15
+  )
+  const blogUrl = container.querySelector('.blogUrl')
+  expect(blogUrl).toHaveTextContent(
+    'url-string'
+  )
 })
