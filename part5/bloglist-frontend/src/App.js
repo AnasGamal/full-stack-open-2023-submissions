@@ -10,30 +10,18 @@ import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('')
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState('')
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl
-    }
+  const createBlog = (blogObject) => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        // Reset blog form values
-        setNewBlogTitle('')
-        setNewBlogAuthor('')
-        setNewBlogUrl('')
         // show success UI message
         setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setMessageType('success')
@@ -56,17 +44,6 @@ const App = () => {
       .then(returnedBlog => {
         setBlogs(blogs.map(b => b.id !== returnedBlog.id ? b : returnedBlog))
       })
-  }
-
-  const handleBlogTitleChange = (event) => {
-    setNewBlogTitle(event.target.value)
-  }
-
-  const handleBlogAuthorChange = (event) => {
-    setNewBlogAuthor(event.target.value)
-  }
-  const handleBlogUrlChange = (event) => {
-    setNewBlogUrl(event.target.value)
   }
 
   const handleLogout = () => {
@@ -149,13 +126,7 @@ const App = () => {
 
         <Togglable buttonLabel="new blog" >
           <BlogForm
-            addBlog={addBlog}
-            newBlogTitle={newBlogTitle}
-            handleBlogTitleChange={handleBlogTitleChange}
-            newBlogAuthor={newBlogAuthor}
-            handleBlogAuthorChange={handleBlogAuthorChange}
-            newBlogUrl={newBlogUrl}
-            handleBlogUrlChange={handleBlogUrlChange}
+            createBlog={createBlog}
           />
         </Togglable>
       </div>
