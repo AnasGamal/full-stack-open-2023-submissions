@@ -10,27 +10,21 @@ test('<BlogForm /> calls event handler to create a blog with right values', asyn
 
   // mock BlogForm rendering
   const { container } = render(<BlogForm createBlog={createBlog} />)
-
   // find form input fields html elements by ids
   const inputBlogTitle = container.querySelector('#new-blog-title')
   const inputBlogAuthor = container.querySelector('#new-blog-author')
   const inputBlogUrl = container.querySelector('#new-blog-url')
-
   // find form submit button by id
   const sendButton = container.querySelector('#submit-new-blog')
-
   // mock user typing in form input fields
   await user.type(inputBlogTitle, 'Title')
   await user.type(inputBlogAuthor, 'Author')
   await user.type(inputBlogUrl, 'url')
-
   // mock press form submittion button
   await user.click(sendButton)
-
-  // event handler function is expected to be called once
+  // event handler function is expected to be called once,
   // since submit button is mocked to be clicked once
   expect(createBlog.mock.calls).toHaveLength(1)
-
   // event handler function is called with object content that contains user input values
   expect(createBlog.mock.calls[0][0].title).toBe('Title')
   expect(createBlog.mock.calls[0][0].author).toBe('Author')
