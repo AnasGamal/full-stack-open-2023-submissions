@@ -4,7 +4,7 @@ import React from 'react'
 
 // eslint-disable-next-line react/display-name, no-unused-vars
 const Togglable = React.forwardRef((props, ref) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }

@@ -5,7 +5,10 @@ const LoginForm = ({
   username,
   password
 }) => (
-  <form onSubmit={handleLogin}>
+  <form
+    className='login-form'
+    onSubmit={handleLogin}
+  >
     <div>
       username
       <input
