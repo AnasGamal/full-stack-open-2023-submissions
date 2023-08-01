@@ -119,7 +119,10 @@ const App = () => {
       {user && <div>
         {user.name && <p>{user.name} logged in</p> }
         <form onSubmit={handleLogout}>
-          <button type='submit'>
+          <button
+            id='logout-button'
+            type='submit'
+          >
             Log out
           </button>
         </form>

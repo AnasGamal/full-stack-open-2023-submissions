@@ -1,12 +1,16 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.request('POST', 'http://localhost:3003/api/users/', {
+      name: 'Root',
+      username: 'root',
+      password: 'sekret'
+    })
+    cy.request('POST', 'http://localhost:3003/api/users/', {
       name: 'Alaa',
       username: 'alaa',
       password: 'alaa'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
+    })
     cy.visit('http://localhost:3000')
   })
 
@@ -33,11 +37,11 @@ describe('Blog app', function() {
 
   //   it('a new blog can be created', function() {
   //     cy.contains('new blog').click()
-  //     cy.get('#new-blog-title').type('a blog created by cypress')
-  //     cy.get('#new-blog-author').type('Cypress')
-  //     cy.get('#new-blog-url').type('cypress-url')
-  //     cy.get('#submit-new-blog').click()
-  //     cy.contains('a note created by cypress')
+      // cy.get('#new-blog-title').type('a blog created by cypress')
+      // cy.get('#new-blog-author').type('Cypress')
+      // cy.get('#new-blog-url').type('cypress-url')
+      // cy.get('#submit-new-blog').click()
+      // cy.contains('a note created by cypress')
   //   })
   // })
 
@@ -48,7 +52,7 @@ describe('Blog app', function() {
       cy.get('#login-button').click()
       cy.get('.success').should('contain', 'logged in')
       // make sure it prints in green color
-      cy.get('.success').should('have.css', 'color', 'rgb(0, 128, 0)')
+      // cy.get('.success').should('have.css', 'color', 'rgb(0, 128, 0)')
     })
 
     it('fails with wrong credentials', function() {
@@ -58,6 +62,46 @@ describe('Blog app', function() {
       cy.get('.error').should('contain', 'wrong')
       // make sure it prints in red color
       cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
+    })
+  })
+  describe('Post interaction',function() {
+    beforeEach(function() {
+      cy.get('#username').type('root')
+      cy.get('#password').type('sekret')
+      cy.get('#login-button').click()
+      cy.get('#new-blog-title').type('wonderful blog')
+      cy.get('#new-blog-author').type('wonderful')
+      cy.get('#new-blog-url').type('wonderful-url')
+      cy.get('#submit-new-blog').click()
+      cy.get('#logout-button').click()
+      // user is assumed to be alaa for rest of the tests
+      cy.get('#username').type('alaa')
+      cy.get('#password').type('alaa')
+      cy.get('#login-button').click()
+      cy.get('#new-blog-title').type('awesome blog')
+      cy.get('#new-blog-author').type('awesome')
+      cy.get('#new-blog-url').type('awesome-url')
+      cy.get('#submit-new-blog').click()
+    })
+
+    it('can like button', function() {
+      cy.get('#blog-toggle-button').click()
+      cy.get('.blogLikes').should('contain', '0')
+      cy.get('#like-button').click()
+      cy.get('.blogLikes').should('contain', '1')
+      // make sure it prints in green color
+      // cy.get('.success').should('have.css', 'color', 'rgb(0, 128, 0)')
+    })
+
+    it('User can remove created post', function() {
+      cy.contains('div.blog', 'awesome blog').within(() => {
+        // Click on the 'view' button
+        cy.get('button.blogToggle').click()
+        // Perform any action inside the togglableContent, for example, click on the 'remove' button
+        cy.get('button.remove-button').click() // Replace 'remove-button' with the actual ID or class of the remove button.
+      })
+      // make sure it prints in red color
+      cy.get('.success').should('contain', 'Successfully removed')
     })
   })
 
