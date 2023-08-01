@@ -1,3 +1,5 @@
+const { _ } = Cypress // importing lodash
+
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -26,24 +28,6 @@ describe('Blog app', function() {
   it('login form can be opened', function() {
     cy.contains('Login')
   })
-  // describe('when logged in', function() {
-  //   beforeEach(function() {
-  //     cy.contains('Login').click()
-  //     cy.get('#username').type('alaa')
-  //     cy.get('#password').type('alaa')
-  //     cy.get('#login-button').click()
-  //     cy.contains('Alaa logged in')
-  //   })
-
-  //   it('a new blog can be created', function() {
-  //     cy.contains('new blog').click()
-      // cy.get('#new-blog-title').type('a blog created by cypress')
-      // cy.get('#new-blog-author').type('Cypress')
-      // cy.get('#new-blog-url').type('cypress-url')
-      // cy.get('#submit-new-blog').click()
-      // cy.contains('a note created by cypress')
-  //   })
-  // })
 
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
@@ -73,6 +57,7 @@ describe('Blog app', function() {
       cy.get('#new-blog-author').type('wonderful')
       cy.get('#new-blog-url').type('wonderful-url')
       cy.get('#submit-new-blog').click()
+      cy.contains('wonderful blog').should('exist')
       cy.get('#logout-button').click()
       // user is assumed to be alaa for rest of the tests
       cy.get('#username').type('alaa')
@@ -82,6 +67,7 @@ describe('Blog app', function() {
       cy.get('#new-blog-author').type('awesome')
       cy.get('#new-blog-url').type('awesome-url')
       cy.get('#submit-new-blog').click()
+      cy.contains('awesome blog').should('exist')
     })
 
     it('can like button', function() {
@@ -89,8 +75,6 @@ describe('Blog app', function() {
       cy.get('.blogLikes').should('contain', '0')
       cy.get('#like-button').click()
       cy.get('.blogLikes').should('contain', '1')
-      // make sure it prints in green color
-      // cy.get('.success').should('have.css', 'color', 'rgb(0, 128, 0)')
     })
 
     it('User can remove created post', function() {
@@ -111,6 +95,29 @@ describe('Blog app', function() {
         // remove button shouldn't appear for a user who didn't create the blog
         cy.get('button.remove-button').should('not.exist')
       })
+    })
+
+    it('blogs are ordered according to likes with the blog with the most likes being first', function() {
+      cy.contains('div.blog', 'awesome blog').within(() => {
+        // Click on the 'view' button
+        cy.get('button.blogToggle').click()
+        // Click like button twice
+        cy.get('#like-button').click()
+        cy.get('.blogLikes').should('contain', '1')
+        cy.get('#like-button').click()
+        cy.get('.blogLikes').should('contain', '2')
+      })
+
+      cy.contains('div.blog', 'wonderful blog').within(() => {
+        // Click on the 'view' button
+        cy.get('button.blogToggle').click()
+        // Click like button once
+        cy.get('#like-button').click()
+        cy.get('.blogLikes').should('contain', '1')
+      })
+
+      cy.get('.blog').eq(0).should('contain', 'awesome blog')
+      cy.get('.blog').eq(1).should('contain', 'wonderful blog')
     })
   })
 
