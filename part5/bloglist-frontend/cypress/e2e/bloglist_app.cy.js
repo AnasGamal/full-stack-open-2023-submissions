@@ -97,11 +97,20 @@ describe('Blog app', function() {
       cy.contains('div.blog', 'awesome blog').within(() => {
         // Click on the 'view' button
         cy.get('button.blogToggle').click()
-        // Perform any action inside the togglableContent, for example, click on the 'remove' button
+        // Click on remove button
         cy.get('button.remove-button').click() // Replace 'remove-button' with the actual ID or class of the remove button.
       })
-      // make sure it prints in red color
-      cy.get('.success').should('contain', 'Successfully removed')
+      // make sure it prints green success remove message
+      cy.get('.success').should('contain', 'removed')
+    })
+
+    it('User can not remove created posts by other users', function() {
+      cy.contains('div.blog', 'wonderful blog').within(() => {
+        // Click on the 'view' button
+        cy.get('button.blogToggle').click()
+        // remove button shouldn't appear for a user who didn't create the blog
+        cy.get('button.remove-button').should('not.exist')
+      })
     })
   })
 
