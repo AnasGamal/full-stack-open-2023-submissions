@@ -4,7 +4,7 @@ import { incrementVoteOf } from '../reducers/anecdoteReducer';
 const AnecdoteList = () => { 
     const anecdotes = useSelector(state =>
       {
-      if (state.filter === '') {
+      if (state.filter === '' || state.filter === 'ALL') {
         return state.anecdotes
       }
       else {
