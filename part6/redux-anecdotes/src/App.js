@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { createAnecdote, incrementVoteOf } from './reducers/anecdoteReducer';
+// import AnecdoteForm from './components/AnecdoteForm'
+import AnecdoteList from './components/AnecdoteList'
 
 const generateId = () =>
   Number((Math.random() * 1000000).toFixed(0))
@@ -16,25 +18,12 @@ const App = () => {
     dispatch(createAnecdote(content))
   }
 
-  const vote = (id) => {
-    console.log('vote', id)
-    dispatch(incrementVoteOf(id))
-  }
+
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
-        <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
-          </div>
-        </div>
-      )}
+      <AnecdoteList />
       <h2>create new</h2>
       <form onSubmit={addAnecdote}>
         <div><input name="anecdote" /></div>
