@@ -45,10 +45,6 @@ const anecdoteReducer = (state = initialState, action) => {
       return state.map(obj => (obj.id === action.payload.id) ? { ...obj, votes: obj.votes + 1 } : obj)
     case 'NEW_ANECDOTE':
       return [...state, action.payload]
-    case 'SET_FILTER':
-      // use immutable method, i suspect that filter mutates the state
-      const filteredState = state.filter(anecdote => anecdote.content.toLowerCase().includes(action.payload.toLowerCase()))
-      return filteredState
     default: return state
   }
 }
