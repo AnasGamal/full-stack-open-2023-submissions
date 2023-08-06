@@ -37,7 +37,7 @@ export const incrementVoteOf = (id) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
   switch (action.type) {
@@ -45,8 +45,12 @@ const reducer = (state = initialState, action) => {
       return state.map(obj => (obj.id === action.payload.id) ? { ...obj, votes: obj.votes + 1 } : obj)
     case 'NEW_ANECDOTE':
       return [...state, action.payload]
+    case 'SET_FILTER':
+      // use immutable method, i suspect that filter mutates the state
+      const filteredState = state.filter(anecdote => anecdote.content.toLowerCase().includes(action.payload.toLowerCase()))
+      return filteredState
     default: return state
   }
 }
 
-export default reducer
+export default anecdoteReducer
