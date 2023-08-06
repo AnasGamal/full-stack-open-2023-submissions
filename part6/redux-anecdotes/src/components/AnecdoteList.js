@@ -5,7 +5,7 @@ const AnecdoteList = () => {
     const anecdotes = useSelector(state =>
       {
       if (state.filter === '' || state.filter === 'ALL') {
-        return state.anecdotes
+        return [...state.anecdotes]
       }
       else {
         return state.anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(state.filter.toLowerCase()))
@@ -15,7 +15,7 @@ const AnecdoteList = () => {
     const dispatch = useDispatch()
     const vote = (id) => {
         console.log('vote', id)
-        dispatch(incrementVoteOf(id))
+        dispatch(incrementVoteOf( id ))
       }
 
     return anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
