@@ -24,7 +24,9 @@ const reducer = (state = initialState, action) => {
   console.log('action', action)
   switch (action.type) {
     case 'INCREMENT_VOTE':
-    return state.map(obj => (obj.id === action.payload.id) ? { ...obj, votes: obj.votes + 1 } : obj)
+      return state.map(obj => (obj.id === action.payload.id) ? { ...obj, votes: obj.votes + 1 } : obj)
+    case 'NEW_ANECDOTE':
+      return [...state, action.payload]
     default: return state
   }
 }
