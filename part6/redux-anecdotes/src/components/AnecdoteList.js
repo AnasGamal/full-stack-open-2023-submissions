@@ -16,10 +16,7 @@ const AnecdoteList = () => {
     const dispatch = useDispatch()
     const vote = (id) => {
         dispatch(incrementVoteOf( id ))
-        dispatch(setNotification(`You voted for ${anecdotes.find(anecdote => anecdote.id === id).content}`))
-        setTimeout(() => {
-          dispatch(removeNotification())
-        }, 5000)
+        dispatch(setNotification(`You voted for ${anecdotes.find(anecdote => anecdote.id === id).content}`, 10))
       }
 
     return anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
