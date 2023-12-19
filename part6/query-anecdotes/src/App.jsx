@@ -1,19 +1,31 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 const App = () => {
+
+  const result = useQuery({
+    queryKey: ['ancedotes'],
+    queryFn: () => axios.get('http://localhost:3001/anecdotes')
+  })
+
+  console.log(JSON.parse(JSON.stringify(result)))
+
+  if (result.isLoading) {
+    return <div>Loading data...</div>
+  }
+
+  if (result.isError) {
+    return <div>anecdote server is not available due to problems in server</div>
+  }
+
+  // for some reason it's structured like this???
+  const anecdotes = result.data.data
 
   const handleVote = (anecdote) => {
     console.log('vote')
   }
-
-  const anecdotes = [
-    {
-      "content": "If it hurts, do it more often",
-      "id": "47145",
-      "votes": 0
-    },
-  ]
 
   return (
     <div>
