@@ -1,16 +1,37 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-import { getAnecdotes, createAnecdote } from './utils/requests'
+import { getAnecdotes, createAnecdote, updateAnecdote } from './utils/requests'
 import { useEffect } from 'react'
 
 const App = () => {
+  const result = useQuery({
+    queryKey: ['anecdotes'],
+    queryFn: getAnecdotes
+  })
 
+  const queryClient = useQueryClient()
 
+  const newAnecdoteMutation = useMutation({
+     mutationFn: createAnecdote, 
+     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+     }
+    })
+  
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: updateAnecdote, 
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    }
+    })
 
+  const voteAnecdote = async (anecdote) => {
+    const updatedAnecdote = await updateAnecdoteMutation.mutateAsync({ ...anecdote, votes: anecdote.votes + 1 })
+    console.log(updatedAnecdote)
+  }
 
-  const newAnecdoteMutation = useMutation({ mutationFn: createAnecdote })
   const addAnecdote = async () => {
     const content = 'This is a new anecdote'
     const newAnecdote = await newAnecdoteMutation.mutateAsync({ content, votes: 0 })
@@ -21,11 +42,7 @@ const App = () => {
     addAnecdote()
   }, [])
 
-  const result = useQuery({
-    queryKey: ['ancedotes'],
-    queryFn: getAnecdotes
-  })
-
+ 
   console.log(JSON.parse(JSON.stringify(result)))
 
   if (result.isLoading) {
@@ -36,18 +53,13 @@ const App = () => {
     return <div>anecdote server is not available due to problems in server</div>
   }
 
-
-
-
   let anecdotes = []
   if (result.isSuccess) {
     anecdotes = result.data
-  }
-
- 
+  } 
 
   const handleVote = (anecdote) => {
-    console.log('vote')
+    voteAnecdote(anecdote)
   }
 
   return (
