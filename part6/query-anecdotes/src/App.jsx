@@ -2,12 +2,12 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-
+import { getAnecdotes } from './utils/requests'
 const App = () => {
 
   const result = useQuery({
     queryKey: ['ancedotes'],
-    queryFn: () => axios.get('http://localhost:3001/anecdotes')
+    queryFn: getAnecdotes
   })
 
   console.log(JSON.parse(JSON.stringify(result)))
@@ -20,8 +20,7 @@ const App = () => {
     return <div>anecdote server is not available due to problems in server</div>
   }
 
-  // for some reason it's structured like this???
-  const anecdotes = result.data.data
+  const anecdotes = result.data
 
   const handleVote = (anecdote) => {
     console.log('vote')
