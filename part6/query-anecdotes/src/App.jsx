@@ -3,9 +3,34 @@ import Notification from './components/Notification'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { getAnecdotes, createAnecdote, updateAnecdote } from './utils/requests'
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import NotificationContext from './contexts/NotificationContext'
+
+const notificationReducer = (state, action) => {
+  switch (action.type) {
+    case "NEWANECDOTE":
+        return `New anecdote added: ${action.anecdote.content}`
+    case "VOTE":
+        return `Voted ${action.anecdote.content}`
+    case "INIT":
+        return false
+    default:
+        return state
+  }
+}
 
 const App = () => {
+
+  const [notification, notificationDispatch] = useReducer(notificationReducer, false)
+
+  const setNotification = (type, anecdote) => {
+    notificationDispatch({ type, anecdote})
+    setTimeout(() => {
+      notificationDispatch({ type: "INIT"})
+    }
+    , 5000)
+  }
+
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes
@@ -29,12 +54,14 @@ const App = () => {
 
   const voteAnecdote = async (anecdote) => {
     const updatedAnecdote = await updateAnecdoteMutation.mutateAsync({ ...anecdote, votes: anecdote.votes + 1 })
+    setNotification("VOTE", updatedAnecdote)
     console.log(updatedAnecdote)
   }
 
   const addAnecdote = async () => {
     const content = 'This is a new anecdote'
     const newAnecdote = await newAnecdoteMutation.mutateAsync({ content, votes: 0 })
+    setNotification("NEWANECDOTE", newAnecdote)
     console.log(newAnecdote)
   }
 
@@ -63,6 +90,7 @@ const App = () => {
   }
 
   return (
+    <NotificationContext.Provider value={{ notification, notificationDispatch }}>
     <div>
       <h3>Anecdote app</h3>
     
@@ -81,6 +109,7 @@ const App = () => {
         </div>
       )}
     </div>
+    </NotificationContext.Provider>
   )
 }
 
