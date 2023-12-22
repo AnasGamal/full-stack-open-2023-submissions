@@ -12,6 +12,8 @@ const notificationReducer = (state, action) => {
         return `New anecdote added: ${action.anecdote.content}`
     case "VOTE":
         return `Voted ${action.anecdote.content}`
+    case "ERROR":
+        return `Error: ${action.anecdote}`
     case "INIT":
         return false
     default:
@@ -42,7 +44,13 @@ const App = () => {
      mutationFn: createAnecdote, 
      onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-     }
+     },
+      onError: (error) => {
+        if (error.response.status === 400) {
+        setNotification("ERROR", "too short anecdote, must have length 5 or more")
+        queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+        }
+      }
     })
   
   const updateAnecdoteMutation = useMutation({
@@ -59,7 +67,7 @@ const App = () => {
   }
 
   const addAnecdote = async () => {
-    const content = 'This is a new anecdote'
+    const content = 'Th'
     const newAnecdote = await newAnecdoteMutation.mutateAsync({ content, votes: 0 })
     setNotification("NEWANECDOTE", newAnecdote)
     console.log(newAnecdote)
@@ -79,6 +87,7 @@ const App = () => {
   if (result.isError) {
     return <div>anecdote server is not available due to problems in server</div>
   }
+
 
   let anecdotes = []
   if (result.isSuccess) {
