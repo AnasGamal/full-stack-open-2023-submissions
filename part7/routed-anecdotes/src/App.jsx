@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useParams
+  Routes, Route, Link, useParams, useNavigate
 } from 'react-router-dom'
 
 const Menu = () => {
@@ -22,7 +22,8 @@ const Anecdote =  ({ anecdotes }) => {
   const anecdote = anecdotes.find(n => n.id === Number(id))
   return (
     <div>
-      <h2>{anecdote.content}</h2>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      { anecdote.info && <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>}
       <p>has {anecdote.votes} votes</p>
     </div>
   )
@@ -65,7 +66,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -75,6 +76,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
   }
 
   return (
