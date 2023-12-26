@@ -5,6 +5,9 @@ import {
 } from 'react-router-dom'
 
 const Menu = () => {
+
+  const [notification, setNotification] = useState(null)
+
   const padding = {
     paddingRight: 5
   }
@@ -14,6 +17,22 @@ const Menu = () => {
         <Link to='/create' style={padding}>create new</Link>
         <Link to='/about' style={padding}>about</Link>
       </div>
+  )
+}
+
+const Notification = ({ notification }) => {
+  const style = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 1
+  }
+  if (notification === '') {
+    return null
+  }
+  return (
+    <div style={style}>
+      {notification}
+    </div>
   )
 }
 
@@ -77,6 +96,10 @@ const CreateNew = (props) => {
       votes: 0
     })
     navigate('/')
+    props.setNotification(`a new anecdote ${content} created!`)
+    setTimeout(() => {
+      props.setNotification('')
+    }, 5000)
   }
 
   return (
@@ -146,10 +169,11 @@ const App = () => {
       <div>
         <h1>Software anecdotes</h1>
         <Menu />
+        <Notification notification={notification} />
         <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/anecdotes/:id' element={<Anecdote anecdotes={anecdotes} />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
         <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
