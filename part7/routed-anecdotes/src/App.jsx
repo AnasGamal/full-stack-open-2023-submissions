@@ -106,9 +106,15 @@ const CreateNew = (props) => {
 
   const handleReset = (e) => {
     e.preventDefault()
-    content.reset()
-    author.reset()
-    info.reset()
+    const resetValues = (fields) => {
+      const reset = (field) => {
+        field.onChange({ target: { value: '' } })
+      }
+      for (const field of fields) {
+        reset(field)
+      }
+    }
+    resetValues([content, author, info])
   }
 
   return (
