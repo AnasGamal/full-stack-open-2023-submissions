@@ -2,7 +2,7 @@ import { useState } from "react";
 import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
-
+import { deleteBlog } from "../reducers/blogReducer";
 const Blog = ({ blog, user, handleLikeClick }) => {
   const dispatch = useDispatch();
   const [displayedBlog, setDisplayedBlog] = useState(blog);
@@ -25,7 +25,7 @@ const Blog = ({ blog, user, handleLikeClick }) => {
       blogService
         .remove(blog.id)
         .then(() => {
-          setDisplayedBlog(null);
+          dispatch(deleteBlog(blog.id));
           dispatch(
             setNotification(
               `Successfully removed ${blog.title} by ${blog.author}`,
