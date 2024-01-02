@@ -18,20 +18,12 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState("");
 
   const createBlog = (blogObject) => {
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
       // show success UI message
-      setMessage(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-      );
-      setMessageType("success");
-      setTimeout(() => {
-        setMessage(null);
-      }, 10000);
+      dispatch(setNotification(`Successfully added ${returnedBlog.title} by ${returnedBlog.author}`, "success", 3));
     });
   };
   const handleLikeClick = (blog) => {
@@ -97,7 +89,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} type={messageType} />
+      <Notification />
       <h2>blogs</h2>
       {user === null && (
         <Togglable buttonLabel="Login">
@@ -130,8 +122,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            setMessage={setMessage}
-            setMessageType={setMessageType}
             user={user}
             handleLikeClick={() => handleLikeClick(blog)}
           />

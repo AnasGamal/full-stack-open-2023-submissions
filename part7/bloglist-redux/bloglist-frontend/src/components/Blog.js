@@ -1,7 +1,10 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
 
-const Blog = ({ blog, setMessage, setMessageType, user, handleLikeClick }) => {
+const Blog = ({ blog, user, handleLikeClick }) => {
+  const dispatch = useDispatch();
   const [displayedBlog, setDisplayedBlog] = useState(blog);
   const [detailsVisible, setdetailsVisible] = useState(false);
   const showWhenVisible = { display: detailsVisible ? "" : "none" };
@@ -23,21 +26,23 @@ const Blog = ({ blog, setMessage, setMessageType, user, handleLikeClick }) => {
         .remove(blog.id)
         .then(() => {
           setDisplayedBlog(null);
-          setMessageType("success");
-          setMessage(
-            `Successfully removed blog ${blog.title} by ${blog.author}`,
+          dispatch(
+            setNotification(
+              `Successfully removed ${blog.title} by ${blog.author}`,
+              "success",
+              3
+            )
           );
-          setTimeout(() => {
-            setMessage(null);
-          }, 5000);
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            setMessageType("error");
-            setMessage(`${error.response.data.error}`);
-            setTimeout(() => {
-              setMessage(null);
-            }, 5000);
+            dispatch(
+              setNotification(
+                `You are not authorized to remove ${blog.title} by ${blog.author}`,
+                "error",
+                3
+              )
+            );
           }
         });
     }
