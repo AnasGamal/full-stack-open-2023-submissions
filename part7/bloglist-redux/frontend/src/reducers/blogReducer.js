@@ -8,7 +8,8 @@ const blogSlice = createSlice({
             return [...state, action.payload]
         },
         updateBlog(state, action) {
-            return state.map(blog => blog.id === action.payload.id ? action.payload : blog)
+            const storedBlogs = state.map(blog => blog.id === action.payload.id ? action.payload : blog).sort((a, b) => b.likes - a.likes)
+            return storedBlogs
         },
         deleteBlog(state, action) {
             return state.filter(blog => blog.id !== action.payload)
@@ -17,7 +18,8 @@ const blogSlice = createSlice({
             return state.map(blog => blog.id === action.payload.id ? action.payload : blog)
         },
         setBlogs(state, action) {
-            return action.payload
+            const sortedBlogs = action.payload.sort((a, b) => b.likes - a.likes);
+            return sortedBlogs;
         },
     }
 })
