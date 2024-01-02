@@ -7,14 +7,14 @@ import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import { setNotification } from "./reducers/notificationReducer";
+import { setBlogs } from "./reducers/blogReducer";
 import { useDispatch } from 'react-redux'
-
+import { useSelector } from 'react-redux'
 import "./index.css";
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([]);
-
+  const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -62,7 +62,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
+    console.log("getting blogs");
+    console.log(blogs)
+    const listedBlogs = blogs
   }, []);
 
   const handleLogin = async (event) => {
@@ -117,7 +120,6 @@ const App = () => {
         </div>
       )}
       {blogs
-        .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
           <Blog
             key={blog.id}
