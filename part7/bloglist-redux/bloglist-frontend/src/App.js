@@ -6,9 +6,13 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import { setNotification } from "./reducers/notificationReducer";
+import { useDispatch } from 'react-redux'
+
 import "./index.css";
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([]);
 
   const [username, setUsername] = useState("");
@@ -81,17 +85,12 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setMessage("Successfully logged in");
-      setMessageType("success");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      dispatch(setNotification(`Successfully logged in as ${user.name}`, "success", 3));
+      console.log("logged in");
     } catch (exception) {
-      setMessage("wrong username or password");
-      setMessageType("error");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      dispatch(setNotification("Wrong credentials", "error"))
+      
+      console.log("wrong credentials");
     }
     console.log("logging in with", username, password);
   };
