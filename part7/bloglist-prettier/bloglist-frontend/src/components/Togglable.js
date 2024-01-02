@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import PropTypes from 'prop-types'
-import React from 'react'
+import { useState } from "react";
+import PropTypes from "prop-types";
+import React from "react";
 
 // eslint-disable-next-line react/display-name, no-unused-vars
 const Togglable = React.forwardRef((props, ref) => {
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(true);
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+    setVisible(!visible);
+  };
 
   return (
     <div>
@@ -23,11 +23,11 @@ const Togglable = React.forwardRef((props, ref) => {
         <button onClick={toggleVisibility}>cancel</button>
       </div>
     </div>
-  )
-})
+  );
+});
 
 Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
-}
+  buttonLabel: PropTypes.string.isRequired,
+};
 
-export default Togglable
+export default Togglable;
