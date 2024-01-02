@@ -1,8 +1,8 @@
-const User = require('../models/user')
-const Blog = require('../models/blog')
+const User = require("../models/user");
+const Blog = require("../models/blog");
 
 const getInitialBlogs = (userId) => {
-return [
+  return [
     {
       _id: "5a422a851b54a676234d17f7",
       title: "React patterns",
@@ -10,7 +10,7 @@ return [
       user: userId,
       url: "https://reactpatterns.com/",
       likes: 7,
-      __v: 0
+      __v: 0,
     },
     {
       _id: "5a422aa71b54a676234d17f8",
@@ -19,7 +19,7 @@ return [
       user: userId,
       url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
       likes: 5,
-      __v: 0
+      __v: 0,
     },
     {
       _id: "5a422b3a1b54a676234d17f9",
@@ -28,7 +28,7 @@ return [
       user: userId,
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
       likes: 12,
-      __v: 0
+      __v: 0,
     },
     {
       _id: "5a422b891b54a676234d17fa",
@@ -37,7 +37,7 @@ return [
       user: userId,
       url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
       likes: 10,
-      __v: 0
+      __v: 0,
     },
     {
       _id: "5a422ba71b54a676234d17fb",
@@ -46,7 +46,7 @@ return [
       user: userId,
       url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
       likes: 0,
-      __v: 0
+      __v: 0,
     },
     {
       _id: "5a422bc61b54a676234d17fc",
@@ -55,38 +55,38 @@ return [
       user: userId,
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
       likes: 2,
-      __v: 0
-    }  
-  ]
-}
+      __v: 0,
+    },
+  ];
+};
 
 const nonExistingId = async () => {
-const blog = new Blog({ content: 'willremovethissoon' })
-await blog.save()
-await blog.deleteOne()
+  const blog = new Blog({ content: "willremovethissoon" });
+  await blog.save();
+  await blog.deleteOne();
 
-return blog._id.toString()
-}
+  return blog._id.toString();
+};
 
 const listWithOneBlog = [
-    {
-      _id: '5a422aa71b54a676234d17f8',
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      __v: 0
-    }
-  ]
+  {
+    _id: "5a422aa71b54a676234d17f8",
+    title: "Go To Statement Considered Harmful",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 5,
+    __v: 0,
+  },
+];
 const usersInDb = async () => {
-    const users = await User.find({})
-    return users.map(u => u.toJSON())
-}
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
 
 const blogsInDb = async () => {
-    const blogs = await Blog.find({})
-    return blogs.map(u => u.toJSON())
-}
+  const blogs = await Blog.find({});
+  return blogs.map((u) => u.toJSON());
+};
 
 // const createUser = async () => {
 //     const user = new User({
@@ -98,11 +98,11 @@ const blogsInDb = async () => {
 //   };
 
 module.exports = {
-usersInDb,
-blogsInDb,
-// initialBlogs,
-listWithOneBlog,
-nonExistingId,
-getInitialBlogs
-// createUser
-}
+  usersInDb,
+  blogsInDb,
+  // initialBlogs,
+  listWithOneBlog,
+  nonExistingId,
+  getInitialBlogs,
+  // createUser
+};
