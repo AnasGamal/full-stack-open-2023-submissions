@@ -36,7 +36,7 @@ const App = () => {
       url: blog.url,
     };
     blogService.update(blog.id, blogObject).then((returnedBlog) => {
-      setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog)));
+      dispatch(setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog))));
     });
   };
 
