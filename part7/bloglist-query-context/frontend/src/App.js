@@ -6,7 +6,7 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useContext } from 'react'
 import { NotificationContext } from './contexts/NotificationContext'
@@ -18,13 +18,8 @@ const App = () => {
   const [user, setUser] = useState(null);
   const { notification, setNotification } = useContext(NotificationContext);
 
-  const createBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      // setBlogs(blogs.concat(returnedBlog));
-      // show success UI message
-      setNotification("SUCCESS", `a new blog ${returnedBlog.title} by ${returnedBlog.author} added.`, 10);
-    });
-  };
+  const queryClient = useQueryClient()
+
   const handleLikeClick = (blog) => {
     console.log("clicked");
     const blogObject = {
@@ -35,7 +30,7 @@ const App = () => {
       url: blog.url,
     };
     blogService.update(blog.id, blogObject).then((returnedBlog) => {
-      setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog)));
+      // setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog)));
     });
   };
 
@@ -60,9 +55,9 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs));
+  // }, []);
 
   const result = useQuery({
     queryKey: ['blogs'],
@@ -117,7 +112,7 @@ const App = () => {
           </form>
 
           <Togglable buttonLabel="new blog">
-            <BlogForm createBlog={createBlog} />
+            <BlogForm />
           </Togglable>
         </div>
       )}
