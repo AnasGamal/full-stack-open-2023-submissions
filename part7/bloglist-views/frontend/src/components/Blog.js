@@ -2,12 +2,11 @@ import { useState } from "react";
 import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
-import { deleteBlog } from "../reducers/blogReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
-  const [displayedBlog, setDisplayedBlog] = useState(blog);
   const [detailsVisible, setdetailsVisible] = useState(false);
   const showWhenVisible = { display: detailsVisible ? "" : "none" };
 
@@ -62,48 +61,12 @@ const Blog = ({ blog, user }) => {
     }
   };
 
-  if (displayedBlog === null) {
-    return null;
-  }
+
+  console.log(blog)
   return (
     <div style={blogStyle} className="blog">
-      {blog.title}
-      <button
-        id="blog-toggle-button"
-        onClick={handleViewBlog}
-        className="blogToggle"
-      >
-        {detailsVisible ? "hide" : "view"}
-      </button>
-      <div style={showWhenVisible} className="togglableContent">
-        {detailsVisible ? (
-          <>
-            <p className="blogUrl">{blog.url}</p>
-            <p className="blogLikes">
-              {blog.likes}{" "}
-              <button
-                id="like-button"
-                onClick={() => handleLikeClick(blog)}
-                className="blogLikeButton"
-              >
-                like
-              </button>
-            </p>
-            <p className="blogUser">{blog.user.name}</p>
-            {user && user.username === blog.user.username ? (
-              <p>
-                <button
-                  className="remove-button"
-                  onClick={() => handleRemoveClick(blog)}
-                >
-                  remove
-                </button>
-              </p>
-            ) : null}
-          </>
-        ) : null}
+      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
       </div>
-    </div>
   );
 };
 

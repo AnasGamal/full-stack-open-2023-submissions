@@ -18,6 +18,7 @@ import {
 import Users from "./components/Users";
 import User from "./components/User";
 import userService from "./services/users";
+import BlogDetails from "./components/BlogDetails";
 
 import "./index.css";
 
@@ -132,6 +133,7 @@ const App = () => {
         )))}
         <Routes>
       <Route path="/" element={<Users users={users} />} />
+      <Route path="/blogs/:id" element={<BlogDetails blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />
       </Routes>
     </div>
