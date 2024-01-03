@@ -6,7 +6,7 @@ const middleware = require("../utils/middleware");
 
 blogsRouter.get("/", (request, response) => {
   Blog.find({})
-    .populate("user", { username: 1, name: 1 })
+    .populate("user", { username: 1, name: 1 }).populate("comments")
     .then((blogs) => {
       response.json(blogs);
     });
@@ -22,6 +22,26 @@ blogsRouter.get("/:id", (request, response, next) => {
       }
     })
     .catch((error) => next(error));
+});
+
+
+blogsRouter.post("/:id/comments", async (request, response, next) => {
+  const body = request.body;
+  const { comment } = request.body;
+  const blog = await Blog.findById(request.params.id);
+
+  if (!comment || typeof comment === "undefined") {
+    return response.status(400).end();
+  }
+
+  await Blog.findByIdAndUpdate(
+    request.params.id,
+    { comments: blog.comments.concat(comment) }
+  )
+
+  const updatedBlog = await Blog.findById(request.params.id).populate("user", { username: 1, name: 1 }).populate("comments");
+  
+  response.status(201).json(updatedBlog);
 });
 
 blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
@@ -44,7 +64,7 @@ blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   });
 
   savedBlog.save().then((result) => {
-    result.populate("user", { username: 1, name: 1 }).then((result) => {
+    result.populate("user", { username: 1, name: 1 }).populate("comments").then((result) => {
       response.status(201).json(result);
     });
   });
@@ -90,7 +110,7 @@ blogsRouter.put("/:id", (request, response, next) => {
   };
 
   Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    .populate("user", { username: 1, name: 1 })
+    .populate("user", { username: 1, name: 1 }).populate("comments")
     .then((updatedBlog) => {
       response.json(updatedBlog);
     })

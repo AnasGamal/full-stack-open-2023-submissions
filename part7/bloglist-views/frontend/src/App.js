@@ -128,7 +128,10 @@ const App = () => {
           </Togglable>
         </div>
       )}
-      {result.isLoading ? (
+      
+        <Routes>
+      <Route path="/" element={
+      result.isLoading ? (
         <div>Loading...</div>
       ) : (
         blogs.sort((a, b) => b.likes - a.likes)
@@ -138,8 +141,7 @@ const App = () => {
             blog={blog}
             user={user}
           />
-        )))}
-        <Routes>
+        )))} />
       <Route path="/users" element={<Users users={users} />} />
       <Route path="/blogs/:id" element={<BlogDetails blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />

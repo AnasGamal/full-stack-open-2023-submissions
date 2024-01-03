@@ -6,6 +6,11 @@ const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
 
+const addComment = async (id, comment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment });
+  return response.data;
+}
+
 const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
@@ -28,4 +33,4 @@ const remove = async (id) => {
   return request.then((response) => response.data);
 };
 
-export default { getAll, create, remove, update, setToken };
+export default { getAll, create, remove, update, setToken, addComment };
