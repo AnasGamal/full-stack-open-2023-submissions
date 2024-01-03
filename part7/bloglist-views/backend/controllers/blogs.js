@@ -64,7 +64,7 @@ blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   });
 
   savedBlog.save().then((result) => {
-    result.populate("user", { username: 1, name: 1 }).populate("comments").then((result) => {
+    result.populate("user", { username: 1, name: 1 }).then((result) => {
       response.status(201).json(result);
     });
   });
