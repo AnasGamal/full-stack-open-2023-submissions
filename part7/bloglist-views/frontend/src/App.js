@@ -20,7 +20,7 @@ import userService from "./services/users";
 import Blog from "./components/Blog";
 import Blogs from "./components/Blogs";
 import { Container } from '@mui/material'
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 import "./index.css";
 
 const App = () => {
@@ -132,18 +132,27 @@ const App = () => {
       )}
       
         <Routes>
-      <Route path="/" element={
-      result.isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        blogs.sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blogs
-            key={blog.id}
-            blog={blog}
-            user={user}
-          />
-        )))} />
+        <Route
+          path="/"
+          element={
+            result.isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    {blogs
+                      .sort((a, b) => b.likes - a.likes)
+                      .map((blog) => (
+                        <Blogs key={blog.id} blog={blog} user={user} />
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )
+          }
+        />
+
       <Route path="/users" element={<Users users={users} />} />
       <Route path="/blogs/:id" element={<Blog blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />

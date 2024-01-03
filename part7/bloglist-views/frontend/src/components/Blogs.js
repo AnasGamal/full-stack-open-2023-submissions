@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from 'react-router-dom'
+import { TableRow, TableCell } from '@mui/material'
 
 const Blogs = ({ blog, user }) => {
   const dispatch = useDispatch();
@@ -64,9 +65,14 @@ const Blogs = ({ blog, user }) => {
 
   console.log(blog)
   return (
-    <div style={blogStyle} className="blog">
-      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-      </div>
+    <TableRow key={blog.id}>
+      <TableCell>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      </TableCell>
+      <TableCell>
+        {blog.author}
+      </TableCell>
+    </TableRow>
   );
 };
 
