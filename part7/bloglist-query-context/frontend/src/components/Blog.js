@@ -1,7 +1,10 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
+import { useContext } from 'react'
+import { NotificationContext } from '../contexts/NotificationContext'
 
-const Blog = ({ blog, setMessage, setMessageType, user, handleLikeClick }) => {
+const Blog = ({ blog, user, handleLikeClick }) => {
+  const { notification, setNotification } = useContext(NotificationContext);
   const [displayedBlog, setDisplayedBlog] = useState(blog);
   const [detailsVisible, setdetailsVisible] = useState(false);
   const showWhenVisible = { display: detailsVisible ? "" : "none" };
@@ -23,21 +26,11 @@ const Blog = ({ blog, setMessage, setMessageType, user, handleLikeClick }) => {
         .remove(blog.id)
         .then(() => {
           setDisplayedBlog(null);
-          setMessageType("success");
-          setMessage(
-            `Successfully removed blog ${blog.title} by ${blog.author}`,
-          );
-          setTimeout(() => {
-            setMessage(null);
-          }, 5000);
+          setNotification("SUCCESS", `Blog ${blog.title} by ${blog.author} removed.`, 10);
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            setMessageType("error");
-            setMessage(`${error.response.data.error}`);
-            setTimeout(() => {
-              setMessage(null);
-            }, 5000);
+            setNotification("ERROR", "You are not authorized to remove this blog.", 10);
           }
         });
     }

@@ -6,28 +6,23 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useContext } from 'react'
+import { NotificationContext } from './contexts/NotificationContext'
 import "./index.css";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState("");
+  const { notification, setNotification } = useContext(NotificationContext);
 
   const createBlog = (blogObject) => {
     blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
+      // setBlogs(blogs.concat(returnedBlog));
       // show success UI message
-      setMessage(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-      );
-      setMessageType("success");
-      setTimeout(() => {
-        setMessage(null);
-      }, 10000);
+      setNotification("SUCCESS", `a new blog ${returnedBlog.title} by ${returnedBlog.author} added.`, 10);
     });
   };
   const handleLikeClick = (blog) => {
@@ -69,6 +64,14 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+  })
+
+  const blogs = result.data
+
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -81,24 +84,17 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setMessage("Successfully logged in");
-      setMessageType("success");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      setNotification("SUCCESS", `${user.name} logged in`, 10);
     } catch (exception) {
-      setMessage("wrong username or password");
-      setMessageType("error");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      setNotification("ERROR", "Wrong credentials", 10);
+      console.log(notification)
     }
     console.log("logging in with", username, password);
   };
 
   return (
     <div>
-      <Notification message={message} type={messageType} />
+      <Notification />
       <h2>blogs</h2>
       {user === null && (
         <Togglable buttonLabel="Login">
@@ -125,18 +121,19 @@ const App = () => {
           </Togglable>
         </div>
       )}
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
+
+      {result.isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        blogs.sort((a, b) => b.likes - a.likes)
         .map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
-            setMessage={setMessage}
-            setMessageType={setMessageType}
             user={user}
             handleLikeClick={() => handleLikeClick(blog)}
           />
-        ))}
+        )))}
     </div>
   );
 };
