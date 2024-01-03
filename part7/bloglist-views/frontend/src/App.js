@@ -89,12 +89,25 @@ const App = () => {
     console.log("logging in with", username, password);
   };
   
+  const padding = {
+    padding: 5
+  }
 
   return (
     <Router>
+      <div style={{backgroundColor: "lightgrey"}}>
+        <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user && (
+          <span>
+            {user.name} logged in
+            <button onClick={handleLogout}>logout</button>
+          </span>
+        )}
+      </div>
     <div>
       <Notification />
-      <h2>blogs</h2>
+      <h2>blog app</h2>
       {user === null && (
         <Togglable buttonLabel="Login">
           <LoginForm
@@ -108,12 +121,7 @@ const App = () => {
       )}
       {user && (
         <div>
-          {user.name && <p>{user.name} logged in</p>}
-          <form onSubmit={handleLogout}>
-            <button id="logout-button" type="submit">
-              Log out
-            </button>
-          </form>
+          
 
           <Togglable buttonLabel="new blog">
             <BlogForm />
@@ -132,7 +140,7 @@ const App = () => {
           />
         )))}
         <Routes>
-      <Route path="/" element={<Users users={users} />} />
+      <Route path="/users" element={<Users users={users} />} />
       <Route path="/blogs/:id" element={<BlogDetails blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />
       </Routes>
