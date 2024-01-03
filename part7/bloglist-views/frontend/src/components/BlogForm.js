@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
-
+import { TextField, Button } from "@mui/material";
 const BlogForm = () => {
   const [newBlogTitle, setNewBlogTitle] = useState("");
   const [newBlogAuthor, setNewBlogAuthor] = useState("");
@@ -50,32 +50,30 @@ const BlogForm = () => {
   return (
     <form onSubmit={addBlog}>
       <div>
-        title
-        <input
+        <TextField
           value={newBlogTitle}
           onChange={handleBlogTitleChange}
           id="new-blog-title"
+          label="title"
         />
       </div>
       <div>
-        author
-        <input
+        <TextField
           value={newBlogAuthor}
           onChange={handleBlogAuthorChange}
           id="new-blog-author"
+          label="author"
         />
       </div>
       <div>
-        url
-        <input
+       <TextField
           value={newBlogUrl}
           onChange={handleBlogUrlChange}
           id="new-blog-url"
+          label="url"
         />
       </div>
-      <button id="submit-new-blog" type="submit">
-        save
-      </button>
+      <Button variant="contained" color="primary" id="create-blog-button" type="submit">save</Button>
     </form>
   );
 };

@@ -20,7 +20,8 @@ import userService from "./services/users";
 import Blog from "./components/Blog";
 import Blogs from "./components/Blogs";
 import { Container } from '@mui/material'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material'
+import Navbar from "./components/Navbar";
 import "./index.css";
 
 const App = () => {
@@ -67,24 +68,10 @@ const App = () => {
   return (
     <Container>
     <Router>
-      <div style={{backgroundColor: "lightgrey"}}>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user && (
-          <span>
-            {user.name} logged in
-            <button onClick={handleLogout}>logout</button>
-          </span>
-        )}
-      </div>
+      <Navbar />
     <div>
       <Notification />
       <h2>blog app</h2>
-      {user === null && (
-        <Togglable buttonLabel="Login">
-          <LoginForm />
-        </Togglable>
-      )}
       {user && (
         <div>
           
@@ -116,7 +103,7 @@ const App = () => {
             )
           }
         />
-
+      <Route path="/login" element={<LoginForm />} />
       <Route path="/users" element={<Users users={users} />} />
       <Route path="/blogs/:id" element={<Blog blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />

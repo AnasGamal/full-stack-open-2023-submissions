@@ -5,12 +5,18 @@ import { setUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const id = useParams().id;
+  if (user) {
+    navigate(`/`);
+  }
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };

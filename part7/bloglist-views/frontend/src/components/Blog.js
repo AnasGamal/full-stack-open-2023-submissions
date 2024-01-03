@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { useState } from "react";
 import blogService from "../services/blogs";
@@ -7,8 +7,7 @@ import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from 'react-router-dom'
-
-
+import { Button, TextField } from '@mui/material';
 const Blog = ({ blogs }) => {
     if (!blogs) {
         return <div> Loading... </div>
@@ -16,9 +15,9 @@ const Blog = ({ blogs }) => {
     const user = useSelector(state => state.user)
     const id = useParams().id;
     const blog = blogs?.find((b) => b.id === id);
-
+    const navigate = useNavigate();
     if (!blog) {
-        return <div> Blog not found </div>;
+        navigate(`/`);
     }
 
     const dispatch = useDispatch();
@@ -53,6 +52,9 @@ const Blog = ({ blogs }) => {
           .then(() => {
             dispatch(setNotification(`Blog ${blog.title} by ${blog.author} removed.`, "success", 10));
           })
+          .then(() => {
+            navigate(`/`);
+          })
           .catch((error) => {
             if (error.response.status === 401) {
               dispatch(setNotification("You are not authorized to remove this blog.", "error", 10));
@@ -81,14 +83,16 @@ const Blog = ({ blogs }) => {
         <div key={blog.id}>
             <h2>{blog.title}</h2>
             <p><Link to={blog.url}>{blog.url}</Link></p>
-            <p>{blog.likes} likes <button onClick={() => handleLikeClick(blog)}>like</button></p>
+            <p>{blog.likes} likes <Button variant="contained" color="primary" id="like-button" onClick={() => handleLikeClick(blog)}>like</Button></p>
             <p>added by {blog.user.username}</p>
-            {user.username === blog.user.username && <button onClick={() => handleRemoveClick(blog)}>remove</button>}
+            {user.username === blog.user.username && <Button variant="contained" color="primary" id="remove-button" onClick={() => handleRemoveClick(blog)}>remove</Button>}
 
             <h3>comments</h3>
             <form onSubmit={handleAddComment}>
-                <input type="text" />
-                <button type="submit">add comment</button>
+                <TextField id="comment" label="comment" />
+                <Button variant="contained" color="primary" id="add-comment-button" type="submit">
+                    add comment
+                </Button>
             </form>    
             <ul>
                 {blog.comments?.map((comment) => (
