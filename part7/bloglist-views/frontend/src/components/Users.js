@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import userService from "../services/users";
-import {
-    BrowserRouter as Router,
-    Routes, Route, Link
-  } from 'react-router-dom'
 
-const Users = ({ users }) => {
+const Users = () => {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const response = await userService.getAll();
+            setUsers(response);
+        };
+        fetchUsers();
+    }, []);
 
     if (!users) {
         return null;
@@ -25,7 +30,7 @@ const Users = ({ users }) => {
                 <tbody>
                     {users.map(user => (
                         <tr key={user.id}>
-                            <td><Link to={`/users/${user.id}`}>{user.name} </Link></td>
+                            <td>{user.name}</td>
                             <td>{user.blogs.length}</td>
                         </tr>
                     ))}

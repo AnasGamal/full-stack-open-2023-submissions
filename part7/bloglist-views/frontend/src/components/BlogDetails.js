@@ -53,6 +53,21 @@ const BlogDetails = ({ blogs }) => {
           });
       }
     };
+
+
+    const addCommentMutation = useMutation({
+        mutationFn: (comment) => blogService.addComment(blog.id, comment),
+        onSuccess: () => {
+          queryClient.invalidateQueries('blogs');
+        },
+      });
+
+    const handleAddComment = (event) => {
+        event.preventDefault();
+        const comment = event.target[0].value;
+        addCommentMutation.mutateAsync(comment);
+        event.target[0].value = "";
+    }
   
   
     return (
@@ -64,6 +79,10 @@ const BlogDetails = ({ blogs }) => {
             {user.username === blog.user.username && <button onClick={() => handleRemoveClick(blog)}>remove</button>}
 
             <h3>comments</h3>
+            <form onSubmit={handleAddComment}>
+                <input type="text" />
+                <button type="submit">add comment</button>
+            </form>    
             <ul>
                 {blog.comments?.map((comment) => (
                     <li key={comment.id}>{comment}</li>
