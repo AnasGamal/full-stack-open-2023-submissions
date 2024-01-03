@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
@@ -18,7 +17,8 @@ import {
 import Users from "./components/Users";
 import User from "./components/User";
 import userService from "./services/users";
-import BlogDetails from "./components/BlogDetails";
+import Blog from "./components/Blog";
+import Blogs from "./components/Blogs";
 import { Container } from '@mui/material'
 
 import "./index.css";
@@ -138,14 +138,14 @@ const App = () => {
       ) : (
         blogs.sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog
+          <Blogs
             key={blog.id}
             blog={blog}
             user={user}
           />
         )))} />
       <Route path="/users" element={<Users users={users} />} />
-      <Route path="/blogs/:id" element={<BlogDetails blogs={blogs} />} />
+      <Route path="/blogs/:id" element={<Blog blogs={blogs} />} />
       <Route path="/users/:id" element={<User users={users} />} />
       </Routes>
     </div>
