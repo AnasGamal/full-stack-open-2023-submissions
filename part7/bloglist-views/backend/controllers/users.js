@@ -8,6 +8,18 @@ usersRouter.get("/", async (request, response) => {
   response.json(users);
 });
 
+usersRouter.get("/:id", (request, response, next) => {
+  User.findById(request.params.id).populate("blogs")
+    .then((user) => {
+      if (user) {
+        response.json(user);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
   if (username && password !== "") {

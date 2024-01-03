@@ -10,8 +10,14 @@ import { setNotification } from "./reducers/notificationReducer";
 import { setUser } from "./reducers/userReducer";
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery , useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 import Users from "./components/Users";
+import User from "./components/User";
+import userService from "./services/users";
 
 import "./index.css";
 
@@ -20,6 +26,16 @@ const App = () => {
   const user = useSelector(state => state.user)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+      const fetchUsers = async () => {
+          const response = await userService.getAll();
+          setUsers(response);
+      };
+      fetchUsers();
+  }, []);
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
@@ -71,8 +87,10 @@ const App = () => {
     }
     console.log("logging in with", username, password);
   };
+  
 
   return (
+    <Router>
     <div>
       <Notification />
       <h2>blogs</h2>
@@ -112,9 +130,12 @@ const App = () => {
             user={user}
           />
         )))}
-
-      <Users />
+        <Routes>
+      <Route path="/" element={<Users users={users} />} />
+      <Route path="/users/:id" element={<User users={users} />} />
+      </Routes>
     </div>
+    </Router>
   );
 };
 
