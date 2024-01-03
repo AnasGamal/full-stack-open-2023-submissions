@@ -11,6 +11,7 @@ import { setUser } from "./reducers/userReducer";
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import Users from "./components/Users";
 
 import "./index.css";
 
@@ -111,6 +112,8 @@ const App = () => {
             user={user}
           />
         )))}
+
+      <Users />
     </div>
   );
 };
