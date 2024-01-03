@@ -63,7 +63,6 @@ const Blog = ({ blogs }) => {
       }
     };
 
-
     const addCommentMutation = useMutation({
         mutationFn: (comment) => blogService.addComment(blog.id, comment),
         onSuccess: () => {
