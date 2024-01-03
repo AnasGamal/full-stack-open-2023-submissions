@@ -20,20 +20,6 @@ const App = () => {
 
   const queryClient = useQueryClient()
 
-  const handleLikeClick = (blog) => {
-    console.log("clicked");
-    const blogObject = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
-    };
-    blogService.update(blog.id, blogObject).then((returnedBlog) => {
-      // setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog)));
-    });
-  };
-
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
   };
@@ -126,7 +112,6 @@ const App = () => {
             key={blog.id}
             blog={blog}
             user={user}
-            handleLikeClick={() => handleLikeClick(blog)}
           />
         )))}
     </div>

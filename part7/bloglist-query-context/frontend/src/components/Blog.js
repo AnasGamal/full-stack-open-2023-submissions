@@ -1,14 +1,40 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from 'react'
 import { NotificationContext } from '../contexts/NotificationContext'
 
-const Blog = ({ blog, user, handleLikeClick }) => {
+const Blog = ({ blog, user }) => {
   const { notification, setNotification } = useContext(NotificationContext);
   const [displayedBlog, setDisplayedBlog] = useState(blog);
   const [detailsVisible, setdetailsVisible] = useState(false);
   const showWhenVisible = { display: detailsVisible ? "" : "none" };
 
+  const queryClient = useQueryClient()
+
+  const likeBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.update(blog.id, blogObject),
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs');
+    },
+  });
+
+  const handleLikeClick = async (blog) => {
+    await likeBlogMutation.mutateAsync({
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    });
+    setNotification("SUCCESS", `Blog ${blog.title} by ${blog.author} liked.`, 10);
+  };
+
+  const removeBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.remove(blog.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs');
+    },
+  });
+  
   const handleViewBlog = () => {
     setdetailsVisible(!detailsVisible);
   };
@@ -22,10 +48,8 @@ const Blog = ({ blog, user, handleLikeClick }) => {
 
   const handleRemoveClick = (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      blogService
-        .remove(blog.id)
+      removeBlogMutation.mutateAsync(blog)
         .then(() => {
-          setDisplayedBlog(null);
           setNotification("SUCCESS", `Blog ${blog.title} by ${blog.author} removed.`, 10);
         })
         .catch((error) => {
