@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "@babel/highlight": "^7.22.5",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.2",
     "@reduxjs/toolkit": "^2.0.1",
     "@tanstack/react-query": "^5.17.0",
     "axios": "^1.2.3",

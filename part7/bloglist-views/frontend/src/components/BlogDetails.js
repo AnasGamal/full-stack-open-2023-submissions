@@ -10,9 +10,16 @@ import { Link } from 'react-router-dom'
 
 
 const BlogDetails = ({ blogs }) => {
+    if (!blogs) {
+        return <div> Loading... </div>
+    }
     const user = useSelector(state => state.user)
     const id = useParams().id;
-    const blog = blogs.find((b) => b.id === id);
+    const blog = blogs?.find((b) => b.id === id);
+
+    if (!blog) {
+        return <div> Blog not found </div>;
+    }
 
     const dispatch = useDispatch();
     const queryClient = useQueryClient()
@@ -71,7 +78,7 @@ const BlogDetails = ({ blogs }) => {
   
   
     return (
-        <div>
+        <div key={blog.id}>
             <h2>{blog.title}</h2>
             <p><Link to={blog.url}>{blog.url}</Link></p>
             <p>{blog.likes} likes <button onClick={() => handleLikeClick(blog)}>like</button></p>

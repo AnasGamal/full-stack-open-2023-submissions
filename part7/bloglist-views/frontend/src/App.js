@@ -19,6 +19,7 @@ import Users from "./components/Users";
 import User from "./components/User";
 import userService from "./services/users";
 import BlogDetails from "./components/BlogDetails";
+import { Container } from '@mui/material'
 
 import "./index.css";
 
@@ -94,6 +95,7 @@ const App = () => {
   }
 
   return (
+    <Container>
     <Router>
       <div style={{backgroundColor: "lightgrey"}}>
         <Link style={padding} to="/">blogs</Link>
@@ -148,6 +150,7 @@ const App = () => {
       </Routes>
     </div>
     </Router>
+    </Container>
   );
 };
 
