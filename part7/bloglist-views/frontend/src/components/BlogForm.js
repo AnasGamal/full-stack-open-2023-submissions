@@ -1,9 +1,27 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import blogService from "../services/blogs";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
   const [newBlogTitle, setNewBlogTitle] = useState("");
   const [newBlogAuthor, setNewBlogAuthor] = useState("");
   const [newBlogUrl, setNewBlogUrl] = useState("");
+  const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+  
+  const newBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.create(blogObject),
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs');
+    },
+  });
+  const createBlog = async (blogObject) => {  
+    const returnedBlog = await newBlogMutation.mutateAsync(blogObject);
+    dispatch(setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added.`, "success", 10))
+  };
 
   const handleBlogTitleChange = (event) => {
     setNewBlogTitle(event.target.value);

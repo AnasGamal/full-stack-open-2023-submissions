@@ -3,7 +3,9 @@ import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { deleteBlog } from "../reducers/blogReducer";
-const Blog = ({ blog, user, handleLikeClick }) => {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
   const [displayedBlog, setDisplayedBlog] = useState(blog);
   const [detailsVisible, setdetailsVisible] = useState(false);
@@ -20,33 +22,46 @@ const Blog = ({ blog, user, handleLikeClick }) => {
     marginBottom: 5,
   };
 
+  
+  const queryClient = useQueryClient()
+
+  const likeBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.update(blog.id, blogObject),
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs');
+    },
+  });
+
+  const handleLikeClick = async (blog) => {
+    await likeBlogMutation.mutateAsync({
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    });
+    dispatch(setNotification(`Blog ${blog.title} by ${blog.author} liked.`, "success", 10));
+  };
+
+  const removeBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.remove(blog.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs');
+    },
+  });
+  
   const handleRemoveClick = (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      blogService
-        .remove(blog.id)
+      removeBlogMutation.mutateAsync(blog)
         .then(() => {
-          dispatch(deleteBlog(blog.id));
-          dispatch(
-            setNotification(
-              `Successfully removed ${blog.title} by ${blog.author}`,
-              "success",
-              3
-            )
-          );
+          dispatch(setNotification(`Blog ${blog.title} by ${blog.author} removed.`, "success", 10));
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            dispatch(
-              setNotification(
-                `You are not authorized to remove ${blog.title} by ${blog.author}`,
-                "error",
-                3
-              )
-            );
+            dispatch(setNotification("You are not authorized to remove this blog.", "error", 10));
           }
         });
     }
   };
+
   if (displayedBlog === null) {
     return null;
   }

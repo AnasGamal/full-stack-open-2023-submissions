@@ -7,39 +7,18 @@ import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import { setNotification } from "./reducers/notificationReducer";
-import { setBlogs } from "./reducers/blogReducer";
 import { setUser } from "./reducers/userReducer";
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+
 import "./index.css";
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const createBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      // show success UI message
-      dispatch(setNotification(`Successfully added ${returnedBlog.title} by ${returnedBlog.author}`, "success", 3));
-    });
-  };
-  const handleLikeClick = (blog) => {
-    console.log("clicked");
-    const blogObject = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
-    };
-    blogService.update(blog.id, blogObject).then((returnedBlog) => {
-      dispatch(setBlogs(blogs.map((b) => (b.id !== returnedBlog.id ? b : returnedBlog))));
-    });
-  };
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
@@ -63,12 +42,12 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
-    console.log("getting blogs");
-    console.log(blogs)
-    const listedBlogs = blogs
-  }, []);
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+  })
+
+  const blogs = result.data
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -117,19 +96,21 @@ const App = () => {
           </form>
 
           <Togglable buttonLabel="new blog">
-            <BlogForm createBlog={createBlog} />
+            <BlogForm />
           </Togglable>
         </div>
       )}
-      {blogs
+      {result.isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        blogs.sort((a, b) => b.likes - a.likes)
         .map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
             user={user}
-            handleLikeClick={() => handleLikeClick(blog)}
           />
-        ))}
+        )))}
     </div>
   );
 };
