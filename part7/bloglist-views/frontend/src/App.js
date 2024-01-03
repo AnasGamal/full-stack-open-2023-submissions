@@ -26,8 +26,6 @@ import "./index.css";
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   const [users, setUsers] = useState([]);
 
@@ -42,14 +40,6 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     dispatch(setUser(null));
-  };
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
   };
 
   useEffect(() => {
@@ -68,27 +58,7 @@ const App = () => {
 
   const blogs = result.data
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      dispatch(setUser(user));
-      setUsername("");
-      setPassword("");
-      dispatch(setNotification(`Successfully logged in as ${user.name}`, "success", 3));
-      console.log("logged in");
-    } catch (exception) {
-      dispatch(setNotification("Wrong credentials", "error"))
-      
-      console.log("wrong credentials");
-    }
-    console.log("logging in with", username, password);
-  };
+ 
   
   const padding = {
     padding: 5
@@ -112,13 +82,7 @@ const App = () => {
       <h2>blog app</h2>
       {user === null && (
         <Togglable buttonLabel="Login">
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange}
-            handleLogin={handleLogin}
-          />
+          <LoginForm />
         </Togglable>
       )}
       {user && (
