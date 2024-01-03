@@ -10,18 +10,20 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useContext } from 'react'
 import { NotificationContext } from './contexts/NotificationContext'
+import { UserContext } from './contexts/UserContext'
 import "./index.css";
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const { notification, setNotification } = useContext(NotificationContext);
+  const { user, setUser } = useContext(UserContext);
 
   const queryClient = useQueryClient()
-
+  
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
+    setUser(null)
   };
 
   const handleUsernameChange = (event) => {
